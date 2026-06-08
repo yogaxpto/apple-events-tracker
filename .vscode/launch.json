@@ -1,7 +1,8 @@
 {
-  // Debug configurations. The Python extension's debugger (debugpy) launches the
-  // configured interpreter (/usr/local/bin/python — see settings.json), which in the
-  // devcontainer holds the synced project deps (UV_PROJECT_ENVIRONMENT=/usr/local).
+  // Debug configurations. The "uv sync" preLaunchTask installs deps + the editable
+  // package into ${workspaceFolder}/.venv (the /usr/local env is not writable here),
+  // and each config launches that .venv interpreter explicitly so debugpy always has
+  // the project available. Breakpoints map to src/ via the editable install.
   "version": "0.2.0",
   "configurations": [
     {
@@ -11,8 +12,10 @@
       "module": "apple_events_tracker.preview",
       "args": ["--port", "8000"],
       "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/bin/python",
       "console": "integratedTerminal",
       "justMyCode": false,
+      "preLaunchTask": "uv sync",
       "env": {
         "GITHUB_REPOSITORY": "yogaxpto/apple-events-tracker",
         "PYTHONUNBUFFERED": "1"
@@ -30,8 +33,10 @@
         "--verbose"
       ],
       "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/bin/python",
       "console": "integratedTerminal",
       "justMyCode": false,
+      "preLaunchTask": "uv sync",
       "env": {
         "GITHUB_REPOSITORY": "yogaxpto/apple-events-tracker"
       }
