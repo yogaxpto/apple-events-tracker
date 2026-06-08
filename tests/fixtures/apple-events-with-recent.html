@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+  SYNTHETIC FIXTURE — modeled on the documented DS-1 "between-cycles" state of
+  https://www.apple.com/apple-events/ (hero upcoming event + "View recent Apple Events"
+  list). Apple only serves this state outside an active announcement window, so it cannot
+  be captured live during an event. Refresh from a real snapshot when convenient (RES-6).
+  Values below are representative, not real.
+-->
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <title>Apple Events - Apple</title>
+  <meta property="og:title" content="Apple Events" />
+  <meta property="analytics-track" content="Apple Events" />
+</head>
+<body>
+  <main>
+    <section class="hero" data-analytics-section="hero" aria-label="Upcoming Apple Event">
+      <h1>WWDC26</h1>
+      <p class="hero__date">June 8, 2026</p>
+      <p class="hero__time">Watch online at 10 a.m. PT.</p>
+      <p class="hero__copy">
+        Join the worldwide developer community for an in-depth look at the future of
+        Apple platforms.
+      </p>
+      <ul class="hero__actions">
+        <li>
+          <a class="button add-to-calendar"
+             href="/v/apple-events/home/a1b2c3d4e5/built/assets/event/event.ics"
+             data-analytics-title="add to calendar">Add to calendar</a>
+        </li>
+        <li>
+          <a class="button watch" href="https://www.apple.com/apple-events/event-stream/"
+             data-analytics-title="watch">Watch live</a>
+        </li>
+        <li>
+          <a class="button watch-youtube" href="https://www.youtube.com/watch?v=wwdc26live"
+             data-analytics-title="watch on youtube">Watch on YouTube</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="recent-events" data-analytics-section="recent-events"
+             aria-label="View recent Apple Events">
+      <h2>View recent Apple Events</h2>
+      <ul class="recent-events__list">
+        <li class="recent-events__item">
+          <h3 class="recent-events__title">Apple Event</h3>
+          <p class="recent-events__date">September 9, 2025</p>
+          <p class="recent-events__copy">
+            Awe dropping. Watch the keynote introducing the latest iPhone.
+          </p>
+          <a class="recent-events__watch"
+             href="https://www.youtube.com/watch?v=appleevent-sep-2025">Watch the event</a>
+        </li>
+        <li class="recent-events__item">
+          <h3 class="recent-events__title">WWDC25</h3>
+          <p class="recent-events__date">June 9, 2025</p>
+          <p class="recent-events__copy">
+            A first look at the latest software updates across Apple platforms.
+          </p>
+          <a class="recent-events__watch"
+             href="https://www.youtube.com/watch?v=wwdc25keynote">Watch the keynote</a>
+        </li>
+        <li class="recent-events__item">
+          <h3 class="recent-events__title">Apple Event</h3>
+          <p class="recent-events__date">May 7, 2025</p>
+          <p class="recent-events__copy">Let loose. The latest iPad, unveiled.</p>
+          <a class="recent-events__watch"
+             href="https://www.youtube.com/watch?v=appleevent-may-2025">Watch the event</a>
+        </li>
+        <li class="recent-events__item">
+          <h3 class="recent-events__title">Apple Special Event</h3>
+          <p class="recent-events__date">October 28, 2024</p>
+          <p class="recent-events__copy">Mac comes alive with new chips.</p>
+          <a class="recent-events__watch"
+             href="https://www.youtube.com/watch?v=appleevent-oct-2024">Watch the event</a>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Copyright Apple Inc.</p>
+    <a href="https://www.apple.com/apple-events/">apple.com/apple-events</a>
+  </footer>
+</body>
+</html>

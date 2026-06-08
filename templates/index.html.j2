@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Unofficial, auto-updating tracker for Apple special events. Subscribe to a calendar feed for upcoming events." />
+  <title>Apple Events Tracker (Unofficial)</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Apple Events Tracker</h1>
+    <p class="tagline">An unofficial calendar of Apple special events.</p>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="upcoming-heading">
+      <h2 id="upcoming-heading">Next event</h2>
+      {% if upcoming %}
+        {% set next_event = upcoming[0] %}
+        <article class="hero-event">
+          <h3 class="hero-event__title">{{ next_event.title }}</h3>
+          <p class="hero-event__date">
+            <time datetime="{{ next_event.start }}">{{ next_event | event_date }}</time>
+          </p>
+          {% if next_event.description %}
+            <p class="hero-event__blurb">{{ next_event.description }}</p>
+          {% endif %}
+          {% if next_event.watch_url %}
+            <p class="hero-event__watch">
+              <a class="watch-link" href="{{ next_event.watch_url }}">Watch the event</a>
+            </p>
+          {% endif %}
+        </article>
+      {% else %}
+        <p class="hero-empty">No upcoming Apple event announced right now. Subscribe below and the next one will appear automatically.</p>
+      {% endif %}
+    </section>
+
+    <section class="subscribe" aria-labelledby="subscribe-heading">
+      <h2 id="subscribe-heading">Subscribe</h2>
+      <p>Add the feed to your calendar once and stay current automatically.</p>
+      <ul class="subscribe__actions">
+        <li>
+          <a class="btn btn--primary" href="{{ webcal_url }}">Subscribe (webcal)</a>
+        </li>
+        <li>
+          <a class="btn" href="{{ google_calendar_url }}">Add to Google Calendar</a>
+        </li>
+        <li>
+          <a class="btn" href="{{ feed_url }}">Download .ics feed</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="past" aria-labelledby="past-heading">
+      <h2 id="past-heading">Past events</h2>
+      {% if past %}
+        <ul class="past__list">
+          {% for event in past %}
+            <li class="past-event">
+              <h3 class="past-event__title">{{ event.title }}</h3>
+              <p class="past-event__date">
+                <time datetime="{{ event.start }}">{{ event | event_date }}</time>
+              </p>
+              {% if event.description %}
+                <p class="past-event__blurb">{{ event.description }}</p>
+              {% endif %}
+              {% if event.watch_url %}
+                <p class="past-event__watch">
+                  <a class="watch-link" href="{{ event.watch_url }}">Watch</a>
+                </p>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No past events recorded yet.</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="disclaimer">{{ disclaimer }}</p>
+    <p class="footer-links">
+      <a href="{{ source_url }}">Official Apple Events page</a>
+      &middot;
+      <a href="{{ repo_url }}">Source code</a>
+    </p>
+    <p class="last-updated">
+      Last updated
+      <time id="generated-at" datetime="{{ generated_at }}">{{ generated_at }}</time>
+      UTC<span id="local-time"></span>
+    </p>
+  </footer>
+
+  <script>
+    // Progressive enhancement only (WEB-1, WEB-4): no tracking, no network calls.
+    // Shows the "last updated" timestamp in the viewer's local time. The page is
+    // fully usable with this disabled.
+    (function () {
+      var el = document.getElementById("generated-at");
+      var local = document.getElementById("local-time");
+      if (!el || !local) return;
+      var iso = el.getAttribute("datetime");
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return;
+      local.textContent = " (" + d.toLocaleString() + " your time)";
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "Python (native, uv-managed)",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
+  "features": {
+	"ghcr.io/devcontainers-extra/features/uv:1": {},
+	"ghcr.io/devcontainers/features/common-utils:2": {},
+	"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "PROJECT_NAME": "Python (native, uv-managed)",
+    "PYTHON_VERSION": "3.13",
+    "INSTALL_IPYKERNEL": "false",
+    "UV_PROJECT_ENVIRONMENT": "/usr/local",
+    "UV_PYTHON_DOWNLOADS": "never"
+  },
+  "postCreateCommand": "make post-create",
+  "mounts": []
+}
