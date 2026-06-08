@@ -1,4 +1,12 @@
-.PHONY: post-create test-tools init sync lint format type-check gitignore freeze dev-tools ensure-ipykernel
+.PHONY: post-create test-tools init sync lint format type-check gitignore freeze dev-tools ensure-ipykernel preview
+
+# Render the site from data/events.json and serve it locally for preview. The page
+# re-renders on each reload, so template/CSS edits show on refresh. Output goes to a
+# temp dir; your committed docs/ is left untouched. Override the port with
+# `PORT=8080 make preview`.
+PORT ?= 8000
+preview:
+	@uv run python -m apple_events_tracker.preview --port $(PORT)
 
 # Post-create command: verify tools/interpreter and sync dependencies
 post-create: test-tools init ensure-ipykernel sync

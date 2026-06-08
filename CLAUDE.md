@@ -12,6 +12,7 @@ All commands are wrapped in the [Makefile](Makefile):
 - `make lint` — lint (`uv run ruff check .`)
 - `make format` — format (`uv run ruff format .`)
 - `make type-check` — type-check (`uv run mypy .`)
+- `make preview` — render the site from `data/events.json` and serve it locally to preview before committing (re-renders on each reload; `PORT=8080 make preview` to change port)
 - `make post-create` — first-time setup (tool checks, `uv init`, `uv sync`); runs automatically on devcontainer creation
 
 Direct `uv` usage:

@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 apple-events-tracker = "apple_events_tracker.cli:main"
+apple-events-tracker-preview = "apple_events_tracker.preview:main"
 
 [dependency-groups]
 dev = [
