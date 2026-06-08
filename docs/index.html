@@ -3,306 +3,411 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Unofficial, auto-updating tracker for Apple special events. Subscribe to a calendar feed for upcoming events." />
+  <meta name="description" content="Unofficial, auto-updating tracker for Apple special events. Subscribe once to a calendar feed and never miss a keynote." />
+  <meta name="theme-color" content="#05060a" />
+  <meta property="og:title" content="Apple Events Tracker (Unofficial)" />
+  <meta property="og:description" content="Subscribe once to a calendar feed and never miss an Apple keynote." />
+  <meta property="og:type" content="website" />
   <title>Apple Events Tracker (Unofficial)</title>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <h1>Apple Events Tracker</h1>
-    <p class="tagline">An unofficial calendar of Apple special events.</p>
+  <div class="aurora" aria-hidden="true">
+    <span class="aurora__blob aurora__blob--1"></span>
+    <span class="aurora__blob aurora__blob--2"></span>
+    <span class="aurora__blob aurora__blob--3"></span>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" focusable="false">
+          <path d="M17.05 12.94c-.02-2.27 1.85-3.36 1.94-3.41-1.06-1.55-2.71-1.76-3.29-1.78-1.4-.14-2.73.82-3.44.82-.71 0-1.8-.8-2.96-.78-1.52.02-2.93.88-3.71 2.24-1.58 2.74-.4 6.8 1.13 9.02.75 1.09 1.64 2.31 2.81 2.27 1.13-.05 1.56-.73 2.92-.73 1.36 0 1.75.73 2.94.71 1.21-.02 1.98-1.11 2.72-2.21.86-1.27 1.21-2.5 1.23-2.56-.03-.01-2.36-.91-2.38-3.62zM14.8 6.2c.62-.76 1.04-1.8.93-2.85-.9.04-1.99.6-2.63 1.35-.57.67-1.08 1.74-.94 2.76 1 .08 2.02-.51 2.64-1.26z"/>
+        </svg>
+      </span>
+      <span class="brand__name">Apple Events <span class="brand__sub">Tracker</span></span>
+    </a>
+    <a class="topbar__cta" href="webcal://yogaxpto.github.io/apple-events-tracker/feed.ics">Subscribe</a>
   </header>
 
-  <main>
+  <main id="top">
+    <!-- Hero ------------------------------------------------------------------>
     <section class="hero" aria-labelledby="upcoming-heading">
-      <h2 id="upcoming-heading">Next event</h2>
-        <article class="hero-event">
-          <h3 class="hero-event__title">WWDC26</h3>
-          <p class="hero-event__date">
-            <time datetime="2026-06-08">June 8, 2026</time>
-          </p>
-            <p class="hero-event__blurb">Upcoming Apple event.</p>
-            <p class="hero-event__watch">
-              <a class="watch-link" href="https://www.apple.com/apple-events/event-stream/">Watch the event</a>
-            </p>
-        </article>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Unofficial event tracker</p>
+        <h1 id="upcoming-heading" class="hero__title">WWDC26</h1>
+        <p class="hero__date">
+          <time datetime="2026-06-08">June 8, 2026</time>
+        </p>
+          <p class="hero__blurb">Upcoming Apple event.</p>
+
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="webcal://yogaxpto.github.io/apple-events-tracker/feed.ics">Add to calendar</a>
+            <a class="btn btn--ghost" href="https://www.apple.com/apple-events/event-stream/">
+              <span class="btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+              Watch the event
+            </a>
+        </div>
     </section>
 
+    <!-- Subscribe ------------------------------------------------------------->
     <section class="subscribe" aria-labelledby="subscribe-heading">
-      <h2 id="subscribe-heading">Subscribe</h2>
-      <p>Add the feed to your calendar once and stay current automatically.</p>
-      <ul class="subscribe__actions">
-        <li>
-          <a class="btn btn--primary" href="webcal://owner.github.io/REPO/feed.ics">Subscribe (webcal)</a>
+      <div class="section-head">
+        <h2 id="subscribe-heading">Subscribe once, stay current</h2>
+        <p class="section-sub">Add the feed to any calendar app. New and updated events sync automatically — no app, no account.</p>
+      </div>
+      <ul class="cards subscribe__cards">
+        <li class="card card--link">
+          <a href="webcal://yogaxpto.github.io/apple-events-tracker/feed.ics">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M12 13v4M10 15h4"/></svg>
+            </span>
+            <span class="card__body">
+              <span class="card__title">Apple Calendar &amp; more</span>
+              <span class="card__desc">One-tap <code>webcal://</code> subscribe</span>
+            </span>
+            <span class="card__chev" aria-hidden="true">→</span>
+          </a>
         </li>
-        <li>
-          <a class="btn" href="https://calendar.google.com/calendar/r?cid=https%3A%2F%2Fowner.github.io%2FREPO%2Ffeed.ics">Add to Google Calendar</a>
+        <li class="card card--link">
+          <a href="https://calendar.google.com/calendar/r?cid=https%3A%2F%2Fyogaxpto.github.io%2Fapple-events-tracker%2Ffeed.ics">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+            </span>
+            <span class="card__body">
+              <span class="card__title">Google Calendar</span>
+              <span class="card__desc">Add the feed to your Google account</span>
+            </span>
+            <span class="card__chev" aria-hidden="true">→</span>
+          </a>
         </li>
-        <li>
-          <a class="btn" href="https://owner.github.io/REPO/feed.ics">Download .ics feed</a>
+        <li class="card card--link">
+          <a href="https://yogaxpto.github.io/apple-events-tracker/feed.ics">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+            </span>
+            <span class="card__body">
+              <span class="card__title">Download .ics</span>
+              <span class="card__desc">Raw iCalendar file for any app</span>
+            </span>
+            <span class="card__chev" aria-hidden="true">→</span>
+          </a>
         </li>
       </ul>
     </section>
 
+    <!-- Past events ----------------------------------------------------------->
     <section class="past" aria-labelledby="past-heading">
-      <h2 id="past-heading">Past events</h2>
-        <ul class="past__list">
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event</h3>
-              <p class="past-event__date">
+      <div class="section-head">
+        <h2 id="past-heading">Recent Apple Events</h2>
+        <p class="section-sub">A running archive, kept up to date automatically.</p>
+      </div>
+        <ul class="cards past__grid">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event</h3>
+              <p class="past-card__date">
                 <time datetime="2025-09-09">September 9, 2025</time>
               </p>
-                <p class="past-event__blurb">Awe dropping. Watch the keynote introducing the latest iPhone.</p>
-                <p class="past-event__watch">
-                  <a class="watch-link" href="https://www.youtube.com/watch?v=appleevent-sep-2025">Watch</a>
-                </p>
+                <p class="past-card__blurb">Awe dropping. Watch the keynote introducing the latest iPhone.</p>
+                <a class="past-card__watch" href="https://www.youtube.com/watch?v=appleevent-sep-2025">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                  Watch
+                </a>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC25</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC25</h3>
+              <p class="past-card__date">
                 <time datetime="2025-06-09">June 9, 2025</time>
               </p>
-                <p class="past-event__blurb">A first look at the latest software updates across Apple platforms.</p>
-                <p class="past-event__watch">
-                  <a class="watch-link" href="https://www.youtube.com/watch?v=wwdc25keynote">Watch</a>
-                </p>
+                <p class="past-card__blurb">A first look at the latest software updates across Apple platforms.</p>
+                <a class="past-card__watch" href="https://www.youtube.com/watch?v=wwdc25keynote">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                  Watch
+                </a>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event</h3>
+              <p class="past-card__date">
                 <time datetime="2025-05-07">May 7, 2025</time>
               </p>
-                <p class="past-event__blurb">Let loose. The latest iPad, unveiled.</p>
-                <p class="past-event__watch">
-                  <a class="watch-link" href="https://www.youtube.com/watch?v=appleevent-may-2025">Watch</a>
-                </p>
+                <p class="past-card__blurb">Let loose. The latest iPad, unveiled.</p>
+                <a class="past-card__watch" href="https://www.youtube.com/watch?v=appleevent-may-2025">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                  Watch
+                </a>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Special Event</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Special Event</h3>
+              <p class="past-card__date">
                 <time datetime="2024-10-28">October 28, 2024</time>
               </p>
-                <p class="past-event__blurb">Mac comes alive with new chips.</p>
-                <p class="past-event__watch">
-                  <a class="watch-link" href="https://www.youtube.com/watch?v=appleevent-oct-2024">Watch</a>
-                </p>
+                <p class="past-card__blurb">Mac comes alive with new chips.</p>
+                <a class="past-card__watch" href="https://www.youtube.com/watch?v=appleevent-oct-2024">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                  Watch
+                </a>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2024</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2024</h3>
+              <p class="past-card__date">
                 <time datetime="2024-06-10">June 10, 2024</time>
               </p>
-                <p class="past-event__blurb">Apple Intelligence unveiled alongside iOS 18, iPadOS 18, macOS Sequoia, watchOS 11 and visionOS 2.</p>
+                <p class="past-card__blurb">Apple Intelligence unveiled alongside iOS 18, iPadOS 18, macOS Sequoia, watchOS 11 and visionOS 2.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Let Loose&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Let Loose&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2024-05-07">May 7, 2024</time>
               </p>
-                <p class="past-event__blurb">New iPad Pro with M4, redesigned iPad Air, Apple Pencil Pro and Magic Keyboard introduced.</p>
+                <p class="past-card__blurb">New iPad Pro with M4, redesigned iPad Air, Apple Pencil Pro and Magic Keyboard introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Scary Fast&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Scary Fast&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2023-10-30">October 30, 2023</time>
               </p>
-                <p class="past-event__blurb">M3, M3 Pro and M3 Max chips with new 24-inch iMac and 14- and 16-inch MacBook Pro introduced.</p>
+                <p class="past-card__blurb">M3, M3 Pro and M3 Max chips with new 24-inch iMac and 14- and 16-inch MacBook Pro introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Wonderlust&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Wonderlust&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2023-09-12">September 12, 2023</time>
               </p>
-                <p class="past-event__blurb">iPhone 15 and iPhone 15 Pro lineup and Apple Watch Series 9 and Ultra 2 introduced.</p>
+                <p class="past-card__blurb">iPhone 15 and iPhone 15 Pro lineup and Apple Watch Series 9 and Ultra 2 introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2023</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2023</h3>
+              <p class="past-card__date">
                 <time datetime="2023-06-05">June 5, 2023</time>
               </p>
-                <p class="past-event__blurb">Apple Vision Pro and visionOS revealed alongside iOS 17, macOS Sonoma and the 15-inch MacBook Air.</p>
+                <p class="past-card__blurb">Apple Vision Pro and visionOS revealed alongside iOS 17, macOS Sonoma and the 15-inch MacBook Air.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Far Out&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Far Out&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2022-09-07">September 7, 2022</time>
               </p>
-                <p class="past-event__blurb">iPhone 14 lineup, Apple Watch Series 8, Watch Ultra, SE and second-generation AirPods Pro introduced.</p>
+                <p class="past-card__blurb">iPhone 14 lineup, Apple Watch Series 8, Watch Ultra, SE and second-generation AirPods Pro introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2022</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2022</h3>
+              <p class="past-card__date">
                 <time datetime="2022-06-06">June 6, 2022</time>
               </p>
-                <p class="past-event__blurb">M2 chip, redesigned MacBook Air, iOS 16, macOS Ventura and watchOS 9 introduced.</p>
+                <p class="past-card__blurb">M2 chip, redesigned MacBook Air, iOS 16, macOS Ventura and watchOS 9 introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Peek Performance&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Peek Performance&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2022-03-08">March 8, 2022</time>
               </p>
-                <p class="past-event__blurb">Mac Studio with M1 Ultra, Studio Display, iPhone SE (3rd gen) and iPad Air (5th gen) introduced.</p>
+                <p class="past-card__blurb">Mac Studio with M1 Ultra, Studio Display, iPhone SE (3rd gen) and iPad Air (5th gen) introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Unleashed&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Unleashed&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2021-10-18">October 18, 2021</time>
               </p>
-                <p class="past-event__blurb">M1 Pro and M1 Max chips with redesigned 14- and 16-inch MacBook Pro and third-generation AirPods introduced.</p>
+                <p class="past-card__blurb">M1 Pro and M1 Max chips with redesigned 14- and 16-inch MacBook Pro and third-generation AirPods introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;California Streaming&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;California Streaming&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2021-09-14">September 14, 2021</time>
               </p>
-                <p class="past-event__blurb">iPhone 13 lineup, Apple Watch Series 7, iPad (9th gen) and iPad mini (6th gen) introduced.</p>
+                <p class="past-card__blurb">iPhone 13 lineup, Apple Watch Series 7, iPad (9th gen) and iPad mini (6th gen) introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2021</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2021</h3>
+              <p class="past-card__date">
                 <time datetime="2021-06-07">June 7, 2021</time>
               </p>
-                <p class="past-event__blurb">iOS 15, iPadOS 15, macOS Monterey, watchOS 8 and new privacy and FaceTime features introduced.</p>
+                <p class="past-card__blurb">iOS 15, iPadOS 15, macOS Monterey, watchOS 8 and new privacy and FaceTime features introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Spring Loaded&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Spring Loaded&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2021-04-20">April 20, 2021</time>
               </p>
-                <p class="past-event__blurb">AirTag, redesigned M1 iMac, M1 iPad Pro, Apple TV 4K (2nd gen) and purple iPhone 12 introduced.</p>
+                <p class="past-card__blurb">AirTag, redesigned M1 iMac, M1 iPad Pro, Apple TV 4K (2nd gen) and purple iPhone 12 introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;One More Thing&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;One More Thing&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2020-11-10">November 10, 2020</time>
               </p>
-                <p class="past-event__blurb">First Apple silicon M1 Macs: MacBook Air, 13-inch MacBook Pro and Mac mini introduced.</p>
+                <p class="past-card__blurb">First Apple silicon M1 Macs: MacBook Air, 13-inch MacBook Pro and Mac mini introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Hi, Speed&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Hi, Speed&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2020-10-13">October 13, 2020</time>
               </p>
-                <p class="past-event__blurb">iPhone 12 lineup with 5G, iPhone 12 mini and HomePod mini introduced.</p>
+                <p class="past-card__blurb">iPhone 12 lineup with 5G, iPhone 12 mini and HomePod mini introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Time Flies&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Time Flies&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2020-09-15">September 15, 2020</time>
               </p>
-                <p class="past-event__blurb">Apple Watch Series 6 and SE, iPad (8th gen), iPad Air (4th gen) and Apple One bundles introduced.</p>
+                <p class="past-card__blurb">Apple Watch Series 6 and SE, iPad (8th gen), iPad Air (4th gen) and Apple One bundles introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2020</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2020</h3>
+              <p class="past-card__date">
                 <time datetime="2020-06-22">June 22, 2020</time>
               </p>
-                <p class="past-event__blurb">Apple silicon transition for the Mac announced alongside iOS 14, macOS Big Sur and watchOS 7.</p>
+                <p class="past-card__blurb">Apple silicon transition for the Mac announced alongside iOS 14, macOS Big Sur and watchOS 7.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;By Innovation Only&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;By Innovation Only&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2019-09-10">September 10, 2019</time>
               </p>
-                <p class="past-event__blurb">iPhone 11 and iPhone 11 Pro, Apple Watch Series 5, iPad (7th gen) and Apple Arcade and TV+ pricing introduced.</p>
+                <p class="past-card__blurb">iPhone 11 and iPhone 11 Pro, Apple Watch Series 5, iPad (7th gen) and Apple Arcade and TV+ pricing introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2019</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2019</h3>
+              <p class="past-card__date">
                 <time datetime="2019-06-03">June 3, 2019</time>
               </p>
-                <p class="past-event__blurb">Mac Pro and Pro Display XDR, iPadOS, iOS 13, macOS Catalina and Sign in with Apple introduced.</p>
+                <p class="past-card__blurb">Mac Pro and Pro Display XDR, iPadOS, iOS 13, macOS Catalina and Sign in with Apple introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;It&#39;s Show Time&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;It&#39;s Show Time&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2019-03-25">March 25, 2019</time>
               </p>
-                <p class="past-event__blurb">Apple TV+, Apple News+, Apple Arcade and Apple Card services announced.</p>
+                <p class="past-card__blurb">Apple TV+, Apple News+, Apple Arcade and Apple Card services announced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;There&#39;s More in the Making&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;There&#39;s More in the Making&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2018-10-30">October 30, 2018</time>
               </p>
-                <p class="past-event__blurb">Redesigned iPad Pro with Face ID, new MacBook Air and Mac mini introduced.</p>
+                <p class="past-card__blurb">Redesigned iPad Pro with Face ID, new MacBook Air and Mac mini introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Gather Round&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Gather Round&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2018-09-12">September 12, 2018</time>
               </p>
-                <p class="past-event__blurb">iPhone XS, iPhone XS Max, iPhone XR and Apple Watch Series 4 introduced.</p>
+                <p class="past-card__blurb">iPhone XS, iPhone XS Max, iPhone XR and Apple Watch Series 4 introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2018</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2018</h3>
+              <p class="past-card__date">
                 <time datetime="2018-06-04">June 4, 2018</time>
               </p>
-                <p class="past-event__blurb">iOS 12, macOS Mojave, watchOS 5 and tvOS 12 introduced with Screen Time and Memoji.</p>
+                <p class="past-card__blurb">iOS 12, macOS Mojave, watchOS 5 and tvOS 12 introduced with Screen Time and Memoji.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — September 2017</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — September 2017</h3>
+              <p class="past-card__date">
                 <time datetime="2017-09-12">September 12, 2017</time>
               </p>
-                <p class="past-event__blurb">iPhone X, iPhone 8 and 8 Plus, Apple Watch Series 3 and Apple TV 4K introduced at the Steve Jobs Theater.</p>
+                <p class="past-card__blurb">iPhone X, iPhone 8 and 8 Plus, Apple Watch Series 3 and Apple TV 4K introduced at the Steve Jobs Theater.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2017</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2017</h3>
+              <p class="past-card__date">
                 <time datetime="2017-06-05">June 5, 2017</time>
               </p>
-                <p class="past-event__blurb">HomePod, iMac Pro, 10.5-inch iPad Pro, iOS 11 and macOS High Sierra introduced.</p>
+                <p class="past-card__blurb">HomePod, iMac Pro, 10.5-inch iPad Pro, iOS 11 and macOS High Sierra introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Hello Again&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Hello Again&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2016-10-27">October 27, 2016</time>
               </p>
-                <p class="past-event__blurb">MacBook Pro with the Touch Bar introduced.</p>
+                <p class="past-card__blurb">MacBook Pro with the Touch Bar introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — September 2016</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — September 2016</h3>
+              <p class="past-card__date">
                 <time datetime="2016-09-07">September 7, 2016</time>
               </p>
-                <p class="past-event__blurb">iPhone 7 and iPhone 7 Plus, Apple Watch Series 2 and AirPods introduced.</p>
+                <p class="past-card__blurb">iPhone 7 and iPhone 7 Plus, Apple Watch Series 2 and AirPods introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2016</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2016</h3>
+              <p class="past-card__date">
                 <time datetime="2016-06-13">June 13, 2016</time>
               </p>
-                <p class="past-event__blurb">iOS 10, macOS Sierra, watchOS 3 and tvOS 10 introduced; OS X renamed macOS.</p>
+                <p class="past-card__blurb">iOS 10, macOS Sierra, watchOS 3 and tvOS 10 introduced; OS X renamed macOS.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Let Us Loop You In&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Let Us Loop You In&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2016-03-21">March 21, 2016</time>
               </p>
-                <p class="past-event__blurb">iPhone SE (1st gen) and 9.7-inch iPad Pro introduced.</p>
+                <p class="past-card__blurb">iPhone SE (1st gen) and 9.7-inch iPad Pro introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Hey Siri&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Hey Siri&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2015-09-09">September 9, 2015</time>
               </p>
-                <p class="past-event__blurb">iPhone 6s and 6s Plus, iPad Pro, Apple Pencil and fourth-generation Apple TV introduced.</p>
+                <p class="past-card__blurb">iPhone 6s and 6s Plus, iPad Pro, Apple Pencil and fourth-generation Apple TV introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">WWDC 2015</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC 2015</h3>
+              <p class="past-card__date">
                 <time datetime="2015-06-08">June 8, 2015</time>
               </p>
-                <p class="past-event__blurb">Apple Music, iOS 9, OS X El Capitan and watchOS 2 introduced.</p>
+                <p class="past-card__blurb">Apple Music, iOS 9, OS X El Capitan and watchOS 2 introduced.</p>
             </li>
-            <li class="past-event">
-              <h3 class="past-event__title">Apple Event — &#39;Spring Forward&#39;</h3>
-              <p class="past-event__date">
+            <li class="card past-card">
+              <span class="badge badge--special-event">Special Event</span>
+              <h3 class="past-card__title">Apple Event — &#39;Spring Forward&#39;</h3>
+              <p class="past-card__date">
                 <time datetime="2015-03-09">March 9, 2015</time>
               </p>
-                <p class="past-event__blurb">Apple Watch pricing and availability detailed and the 12-inch MacBook with Retina display introduced.</p>
+                <p class="past-card__blurb">Apple Watch pricing and availability detailed and the 12-inch MacBook with Retina display introduced.</p>
             </li>
         </ul>
     </section>
@@ -310,11 +415,11 @@
 
   <footer class="site-footer">
     <p class="disclaimer">Unofficial tracker. Not affiliated with, authorized, or endorsed by Apple Inc. &#34;Apple&#34;, &#34;WWDC&#34;, and event names are trademarks of Apple Inc.</p>
-    <p class="footer-links">
+    <nav class="footer-links" aria-label="Footer">
       <a href="https://www.apple.com/apple-events/">Official Apple Events page</a>
-      &middot;
-      <a href="https://github.com/OWNER/REPO">Source code</a>
-    </p>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/yogaxpto/apple-events-tracker">Source code</a>
+    </nav>
     <p class="last-updated">
       Last updated
       <time id="generated-at" datetime="2026-06-08T17:00:00Z">2026-06-08T17:00:00Z</time>
@@ -324,16 +429,47 @@
 
   <script>
     // Progressive enhancement only (WEB-1, WEB-4): no tracking, no network calls.
-    // Shows the "last updated" timestamp in the viewer's local time. The page is
-    // fully usable with this disabled.
+    // The page is fully usable with JavaScript disabled.
     (function () {
+      // 1) "Last updated" in the viewer's local time.
       var el = document.getElementById("generated-at");
       var local = document.getElementById("local-time");
-      if (!el || !local) return;
-      var iso = el.getAttribute("datetime");
-      var d = new Date(iso);
-      if (isNaN(d.getTime())) return;
-      local.textContent = " (" + d.toLocaleString() + " your time)";
+      if (el && local) {
+        var d = new Date(el.getAttribute("datetime"));
+        if (!isNaN(d.getTime())) {
+          local.textContent = " (" + d.toLocaleString() + " your time)";
+        }
+      }
+
+      // 2) Live countdown to the upcoming event.
+      var cd = document.querySelector("[data-countdown]");
+      if (!cd) return;
+      var target = new Date(cd.getAttribute("data-countdown"));
+      if (isNaN(target.getTime())) return;
+      var units = {
+        days: cd.querySelector('[data-unit="days"]'),
+        hours: cd.querySelector('[data-unit="hours"]'),
+        minutes: cd.querySelector('[data-unit="minutes"]'),
+        seconds: cd.querySelector('[data-unit="seconds"]')
+      };
+      function pad(n) { return (n < 10 ? "0" : "") + n; }
+      function tick() {
+        var diff = Math.floor((target.getTime() - Date.now()) / 1000);
+        if (diff <= 0) {
+          cd.setAttribute("data-live", "now");
+          units.days.textContent = units.hours.textContent =
+            units.minutes.textContent = units.seconds.textContent = "00";
+          clearInterval(timer);
+          return;
+        }
+        units.days.textContent = Math.floor(diff / 86400);
+        units.hours.textContent = pad(Math.floor((diff % 86400) / 3600));
+        units.minutes.textContent = pad(Math.floor((diff % 3600) / 60));
+        units.seconds.textContent = pad(diff % 60);
+      }
+      cd.hidden = false;
+      tick();
+      var timer = setInterval(tick, 1000);
     })();
   </script>
 </body>
