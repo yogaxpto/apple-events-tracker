@@ -1,0 +1,40 @@
+{
+  // Debug configurations. The Python extension's debugger (debugpy) launches the
+  // configured interpreter (/usr/local/bin/python — see settings.json), which in the
+  // devcontainer holds the synced project deps (UV_PROJECT_ENVIRONMENT=/usr/local).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Preview server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "apple_events_tracker.preview",
+      "args": ["--port", "8000"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "GITHUB_REPOSITORY": "yogaxpto/apple-events-tracker",
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    {
+      "name": "Tracker (offline fixture, dry-run)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "apple_events_tracker.cli",
+      "args": [
+        "--from-file",
+        "tests/fixtures/apple-events-recent-gallery.html",
+        "--dry-run",
+        "--verbose"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "GITHUB_REPOSITORY": "yogaxpto/apple-events-tracker"
+      }
+    }
+  ]
+}
