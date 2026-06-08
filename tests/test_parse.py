@@ -82,6 +82,30 @@ def test_ds2_is_authoritative_when_ics_available() -> None:
     assert upcoming.start_datetime().hour == 10
 
 
+# --- DS-1: live recent-events gallery (real saved page, 2026-06) -----------------------
+def test_recent_gallery_fixture_extracts_real_events() -> None:
+    """Real snapshot of the live page: a ``section-recent-events`` carousel whose items
+    nest title/date as ``.headline``/``.subhead`` spans, plus a post-event ``section-hero``
+    recap with no date/.ics. The recap must NOT be emitted as an event, and it must not
+    borrow a date from the gallery (regression for the markup drift that broke parsing)."""
+    result = build_events(_read("apple-events-recent-gallery.html"), RuntimeConfig(), now=NOW)
+    assert result.recent_section_present
+    assert result.recent_count == 6
+    assert result.hero_present  # the WWDC26 recap heading is present...
+    # ...but yields no event (no date, no add-to-calendar link).
+    assert {e.key for e in result.events} == {
+        "special-event-2025-09-09",
+        "wwdc-2025-06-09",
+        "special-event-2024-09-09",
+        "wwdc-2024-06-10",
+        "special-event-2024-05-07",
+        "special-event-2023-10-30",
+    }
+    # Every parsed event carries its own gallery date — none borrowed from elsewhere.
+    assert all(e.status == "past" for e in result.events)
+    assert all(e.title in {"Apple Event", "WWDC"} for e in result.events)
+
+
 # --- DS-1: active-window fixture (the real saved page) ---------------------------------
 def test_active_stream_fixture_is_valid_state_not_error() -> None:
     result = build_events(_read("apple-events-active-stream.html"), RuntimeConfig(), now=NOW)

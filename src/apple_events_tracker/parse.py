@@ -169,9 +169,15 @@ def _find_recent_section(soup: BeautifulSoup) -> Tag | None:
     if node is not None:
         return node
     # Fallback: a heading whose text mentions "recent apple events" → its container.
+    # Prefer the enclosing <section>: the gallery list is often a sibling of the
+    # headline's immediate <div> wrapper, so climbing to the nearest div would miss it.
     for heading in soup.find_all(["h1", "h2", "h3"]):
         if isinstance(heading, Tag) and "recent apple events" in _text(heading).lower():
-            return heading.find_parent(["section", "div", "main"]) or heading.parent
+            return (
+                heading.find_parent("section")
+                or heading.find_parent(["div", "main"])
+                or heading.parent
+            )
     return None
 
 
@@ -181,15 +187,25 @@ def _parse_hero(soup: BeautifulSoup, base_url: str) -> dict[str, object] | None:
     scope = hero if hero is not None else soup.find("main") or soup
 
     title: str | None = None
+    title_heading: Tag | None = None
     for heading in scope.find_all(["h1", "h2"]) if isinstance(scope, Tag) else []:
         cand = _match_title(_text(heading))
         if cand:
             title = cand
+            title_heading = heading if isinstance(heading, Tag) else None
             break
     if not title:
         return None
 
-    block_text = _text(scope) if isinstance(scope, Tag) else ""
+    # Date: read it from a *tight* region so we never borrow an unrelated date from
+    # elsewhere on the page (e.g. the recent-events gallery). When a hero container was
+    # matched by selector, use it; otherwise fall back to the title heading's own
+    # enclosing section rather than the whole <main>.
+    date_scope: Tag | None = hero
+    if date_scope is None and title_heading is not None:
+        parent = title_heading.find_parent("section")
+        date_scope = parent if isinstance(parent, Tag) else title_heading.parent
+    block_text = _text(date_scope) if isinstance(date_scope, Tag) else ""
     event_date = _find_long_date(block_text)
     add_to_cal = find_add_to_calendar_url(soup, base_url)
 
@@ -226,10 +242,19 @@ def _parse_recent(soup: BeautifulSoup, base_url: str) -> tuple[list[dict[str, ob
     for li in candidates:
         if not isinstance(li, Tag):
             continue
+        # Title: prefer a dedicated ".headline" span (live markup nests the title and
+        # date as ".headline"/".subhead" spans inside one heading), then the heading
+        # text, then the whole item — so the matched title stays free of the date/blurb.
+        headline = li.select_one(".headline")
         heading = li.find(["h2", "h3", "h4"])
-        raw_title = _text(heading) if heading else _text(li)
-        title = _match_title(raw_title)
-        event_date = _find_long_date(_text(li))
+        title = None
+        for cand in (_text(headline), _text(heading) if heading else "", _text(li)):
+            if cand:
+                title = _match_title(cand)
+                if title:
+                    break
+        # Date: prefer a ".subhead" span, else scan the whole item.
+        event_date = _find_long_date(_text(li.select_one(".subhead"))) or _find_long_date(_text(li))
         if not title or event_date is None:
             continue
         watch_url: str | None = None

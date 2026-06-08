@@ -131,15 +131,26 @@ TIME_PATTERN = re.compile(
 
 # Candidate container selectors for the "View recent Apple Events" list. Tried in order;
 # parsing falls back to a generic heuristic if none match (markup drift resilience).
+# The first group matches the live markup as of 2026-06 (a `section-recent-events`
+# section wrapping a `recent-events-gallery` carousel); the rest are older/synthetic
+# shapes kept as fallbacks.
 RECENT_LIST_SELECTORS: list[str] = [
+    "section.section-recent-events",
+    "[data-component-list='RecentEventsGallery']",
+    ".recent-events-gallery",
+    "ul.recent-events-gallery-list",
     "section.recent-events",
     '[data-analytics-section="recent-events"]',
     "section[aria-label*='recent' i]",
     "ul.recent-events__list",
 ]
 
-# Candidate selectors for the hero / upcoming-event block.
+# Candidate selectors for the hero / upcoming-event block. The first group matches the
+# live markup as of 2026-06 (a `section-hero` section); the rest are older/synthetic
+# shapes kept as fallbacks.
 HERO_SELECTORS: list[str] = [
+    "section.section-hero",
+    "[data-analytics-section-engagement='name:hero']",
     "section.hero",
     "[data-analytics-section='hero']",
     "section[aria-label*='upcoming' i]",
