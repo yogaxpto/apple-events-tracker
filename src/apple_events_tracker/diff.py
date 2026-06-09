@@ -12,6 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
+from . import config as cfg
 from .model import Event, EventStore
 
 
@@ -60,6 +61,10 @@ def classify(old: EventStore, scraped: list[Event], now: datetime) -> DiffResult
         # Preserve a previously-known Apple UID if this scrape lacks one (DM-2 stability).
         if not fresh.uid and prev.uid:
             fresh.uid = prev.uid
+        # Don't let a generic scrape ("Apple Event"/"WWDC") downgrade a richer known title.
+        # Apple's redesigned gallery only prints bare labels; the curated seed/archive name
+        # must survive (otherwise the feed degrades and SEQUENCE bumps on a phantom change).
+        fresh.title = cfg.prefer_richer_title(prev.title, fresh.title)
         fresh.first_seen = prev.first_seen or iso_utc(now)
 
         if fresh.comparable_fields() != prev.comparable_fields():
