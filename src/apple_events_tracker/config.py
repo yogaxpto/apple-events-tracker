@@ -139,17 +139,36 @@ def is_generic_title(title: str) -> bool:
     return title.strip().lower() in GENERIC_EVENT_TITLES
 
 
+def _normalize_title(title: str) -> str:
+    """Lowercase + collapse whitespace for specificity comparisons."""
+    return " ".join(title.split()).lower()
+
+
 def prefer_richer_title(stored: str, scraped: str) -> str:
     """Choose the title to keep when a scrape re-reports a known event.
 
-    A *generic* scrape ("Apple Event", "WWDC") must not downgrade a richer stored title
-    ("WWDC 2024", "Apple Event — 'Let Loose'"); the curated/previously-seen name wins.
-    Any other scraped title wins as before, so Apple legitimately renaming or refining an
-    event is still picked up.
+    A *less specific* scrape must not downgrade a richer stored title; the curated or
+    previously-seen name wins. Two signals mark the scrape as less specific:
+
+    * it is one of the bare :data:`GENERIC_EVENT_TITLES` ("Apple Event", "WWDC") while
+      the stored title is not, or
+    * its normalized form is a shorter substring of the stored title ("WWDC" within
+      "WWDC 2024", "Apple Event" within "Apple Event — 'Let Loose'"). This specificity
+      fallback also catches bare labels we have not enumerated.
+
+    Any other scraped title wins, so Apple legitimately renaming or refining an event
+    (one specific title to a *different* specific title) is still picked up.
     """
-    if stored and is_generic_title(scraped) and not is_generic_title(stored):
-        return stored
-    return scraped
+    if not stored:
+        return scraped
+    norm_stored = _normalize_title(stored)
+    norm_scraped = _normalize_title(scraped)
+    if norm_scraped == norm_stored:
+        return scraped
+    less_specific = (is_generic_title(scraped) and not is_generic_title(stored)) or (
+        norm_scraped in norm_stored and len(norm_scraped) < len(norm_stored)
+    )
+    return stored if less_specific else scraped
 
 
 # Long-form date, e.g. "September 9, 2025" (comma optional, day optional for some copy).

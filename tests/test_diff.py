@@ -70,6 +70,17 @@ def test_generic_scrape_does_not_downgrade_richer_known_title() -> None:
     assert merged.sequence == 2
 
 
+def test_unenumerated_less_specific_scrape_is_blocked_by_specificity_fallback() -> None:
+    # A bare label that isn't in GENERIC_EVENT_TITLES is still caught by the substring
+    # specificity check, so an unforeseen generic label can't downgrade a richer title.
+    stored = _ev("special-event-2014-09-09", "Apple Developer Conference 2014", "2014-09-09")
+    fresh = _ev("special-event-2014-09-09", "Apple Developer Conference", "2014-09-09")
+    result = classify(EventStore(events=[stored]), [fresh], NOW)
+    assert not result.has_changes
+    title = result.merged.by_key()["special-event-2014-09-09"].title
+    assert title == "Apple Developer Conference 2014"
+
+
 def test_specific_rename_still_wins_over_known_title() -> None:
     # A genuine rename to another *specific* title is a real change and must be applied.
     stored = _ev("special-event-2025-09-09", "Apple Event", "2025-09-09")
