@@ -1,0 +1,85 @@
+# Dependabot keeps every dependency surface in this repo current. Four ecosystems
+# apply here, each declared below:
+#   - uv             -> pyproject.toml + uv.lock (the Python runtime/dev deps)
+#   - github-actions -> the pinned actions in .github/workflows/{ci,update}.yml
+#   - docker         -> the `FROM python:3.13-slim` base image in ./Dockerfile
+#   - devcontainers  -> the feature versions in .devcontainer/devcontainer.json
+#
+# Conventions mirrored from the repo's commit history: conventional-commit subjects
+# with a scoped prefix (Dependabot renders `chore(deps): ...` / `chore(deps-dev): ...`),
+# weekly schedule, and grouped low-risk updates so routine bumps land in one PR while
+# majors stay individual for deliberate review.
+version: 2
+
+updates:
+  # --- Python (uv) -----------------------------------------------------------
+  # The lockfile (uv.lock) is the source of truth — CI runs `uv sync --frozen`, so
+  # Dependabot must keep both pyproject.toml ranges and the lock in step.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "yogaxpto"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    groups:
+      # Routine, low-risk bumps for the runtime deps in one PR.
+      python-runtime:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      # Dev tooling (ruff, mypy, pytest, type stubs) churns often — keep it together.
+      python-dev:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Majors are intentionally left ungrouped so each gets a dedicated PR.
+
+  # --- GitHub Actions --------------------------------------------------------
+  # AUTO-6 pins third-party actions to release tags; Dependabot advances those tags.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "yogaxpto"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    groups:
+      github-actions:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # --- Docker (dev image base) ----------------------------------------------
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "yogaxpto"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+
+  # --- Dev container features ------------------------------------------------
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "yogaxpto"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      devcontainer-features:
+        update-types:
+          - "minor"
+          - "patch"
