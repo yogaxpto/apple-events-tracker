@@ -1,13 +1,21 @@
 {
-  "name": "Python (native, uv-managed)",
-  "dockerComposeFile": "./docker-compose.yml",
+  "name": "Apple Events Tracker (Python, uv, system env)",
+
+  // Compose-extend pattern (adopted from base-python-project): the repo-root file
+  // builds the image, the .devcontainer file adds the bind mount + keep-alive command.
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
   "service": "app",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // Run as the non-root `vscode` user. Claude Code's extension launches with
+  // --dangerously-skip-permissions in a trusted devcontainer and refuses to run as root.
+  // The image hands `vscode` ownership of /usr/local, so the no-venv system-env approach
+  // (editable installs + `uv run`) still works. See Dockerfile.
   "remoteUser": "vscode",
+
   "features": {
-	"ghcr.io/devcontainers-extra/features/uv:1": {},
-	"ghcr.io/devcontainers/features/common-utils:2": {},
-	"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+    "ghcr.io/devcontainers/features/common-utils:2.5.9": {},
+    "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
   },
   "customizations": {
     "vscode": {
@@ -16,17 +24,25 @@
         "ms-python.vscode-pylance",
         "charliermarsh.ruff",
         "ms-python.mypy-type-checker",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "github.vscode-github-actions",
         "ms-toolsai.jupyter"
       ]
     }
   },
   "remoteEnv": {
-    "PROJECT_NAME": "Python (native, uv-managed)",
-    "PYTHON_VERSION": "3.13",
+    "PROJECT_NAME": "Apple Events Tracker",
     "INSTALL_IPYKERNEL": "false",
+    // Point every uv invocation (sync/run) at the system Python — never a .venv.
     "UV_PROJECT_ENVIRONMENT": "/usr/local",
-    "UV_PYTHON_DOWNLOADS": "never"
+    "UV_PYTHON_DOWNLOADS": "never",
+    // The image's build-time cache lives under /root; at runtime as `vscode` use a
+    // home-dir cache that's actually writable.
+    "UV_CACHE_DIR": "/home/vscode/.cache/uv"
   },
-  "postCreateCommand": "make post-create",
-  "mounts": []
+
+  // Deps are baked into the image; this only installs the project editable into
+  // /usr/local against the mounted source and runs the tool checks.
+  "postCreateCommand": "make post-create"
 }

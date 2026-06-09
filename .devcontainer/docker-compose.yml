@@ -1,10 +1,14 @@
-version: '3.8'
-
+# Devcontainer override, layered on top of the repo-root docker-compose.yml. Paths
+# here are relative to this file, so ".." is the repo root. Bind-mount the project and
+# keep the container running for VS Code to attach.
 services:
   app:
-    build: .
-    image: python_playground
-    container_name: python_playground
     volumes:
-      - ..:/workspace:cached
+      - .:/workspaces/apple-events-tracker:cached
+      # Persist Claude Code's auth/config across rebuilds so you don't re-login each time.
+      # Seeded (and owned) by /home/vscode/.claude from the image on first mount.
+      - claude-config:/home/vscode/.claude
     command: sleep infinity
+
+volumes:
+  claude-config:

@@ -1,0 +1,6 @@
+# Primary Compose file: builds the dev image from the repo-root Dockerfile. The
+# devcontainer layers .devcontainer/docker-compose.yml on top for the bind mount and
+# the keep-alive command (see .devcontainer/devcontainer.json -> dockerComposeFile).
+services:
+  app:
+    build: .
