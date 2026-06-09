@@ -116,6 +116,42 @@ EVENT_NAME_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"\bKeynote\b", re.IGNORECASE),
 ]
 
+# Generic event labels that carry no distinguishing year or codename. Apple's redesigned
+# recent-events gallery (2026-06) prints only these bare labels in its ``.headline`` span
+# ("Apple Event", "WWDC"), dropping the richer names the curated seed/archive holds
+# ("WWDC 2024", "Apple Event — 'Let Loose'"). A scrape that yields one of these must never
+# overwrite a richer title already on record — see :func:`prefer_richer_title`.
+GENERIC_EVENT_TITLES: frozenset[str] = frozenset(
+    {
+        "apple event",
+        "apple special event",
+        "special event",
+        "apple keynote",
+        "apple event keynote",
+        "keynote",
+        "wwdc",
+    }
+)
+
+
+def is_generic_title(title: str) -> bool:
+    """True if ``title`` is a bare event label with no year/codename to distinguish it."""
+    return title.strip().lower() in GENERIC_EVENT_TITLES
+
+
+def prefer_richer_title(stored: str, scraped: str) -> str:
+    """Choose the title to keep when a scrape re-reports a known event.
+
+    A *generic* scrape ("Apple Event", "WWDC") must not downgrade a richer stored title
+    ("WWDC 2024", "Apple Event — 'Let Loose'"); the curated/previously-seen name wins.
+    Any other scraped title wins as before, so Apple legitimately renaming or refining an
+    event is still picked up.
+    """
+    if stored and is_generic_title(scraped) and not is_generic_title(stored):
+        return stored
+    return scraped
+
+
 # Long-form date, e.g. "September 9, 2025" (comma optional, day optional for some copy).
 LONG_DATE_PATTERN = re.compile(
     r"\b(January|February|March|April|May|June|July|August|September|October|November|December)"

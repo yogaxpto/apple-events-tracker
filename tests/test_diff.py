@@ -55,6 +55,30 @@ def test_changed_event_bumps_sequence_and_preserves_first_seen() -> None:
     assert result.changed[0].last_changed == iso_utc(NOW)
 
 
+def test_generic_scrape_does_not_downgrade_richer_known_title() -> None:
+    # Apple's redesigned gallery prints only "WWDC" / "Apple Event"; the curated archive
+    # holds "WWDC 2024". A re-scrape must keep the richer title and stay unchanged (no
+    # phantom CHANGED, no SEQUENCE bump, no feed degradation).
+    stored = _ev("wwdc-2024-06-10", "WWDC 2024", "2024-06-10")
+    stored.sequence = 2
+    stored.first_seen = "2024-01-01T00:00:00Z"
+    fresh = _ev("wwdc-2024-06-10", "WWDC", "2024-06-10")
+    result = classify(EventStore(events=[stored]), [fresh], NOW)
+    assert not result.has_changes
+    merged = result.merged.by_key()["wwdc-2024-06-10"]
+    assert merged.title == "WWDC 2024"
+    assert merged.sequence == 2
+
+
+def test_specific_rename_still_wins_over_known_title() -> None:
+    # A genuine rename to another *specific* title is a real change and must be applied.
+    stored = _ev("special-event-2025-09-09", "Apple Event", "2025-09-09")
+    fresh = _ev("special-event-2025-09-09", "Apple Event — Awe Dropping", "2025-09-09")
+    result = classify(EventStore(events=[stored]), [fresh], NOW)
+    assert [e.key for e in result.changed] == ["special-event-2025-09-09"]
+    assert result.merged.by_key()["special-event-2025-09-09"].title == "Apple Event — Awe Dropping"
+
+
 def test_known_events_are_never_deleted() -> None:
     stored = _ev("special-event-2020-01-01", "Old Event", "2020-01-01")
     # fresh scrape doesn't include it; it must survive in the merge.
