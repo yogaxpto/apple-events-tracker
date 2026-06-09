@@ -165,7 +165,7 @@ def run(argv: list[str] | None = None) -> int:
         merged.validate()  # RES-3
         cal_bytes = ics.build_calendar(merged, config)
         ics.validate_ics(cal_bytes)  # RES-2 publish gate
-    except Exception as exc:  # noqa: BLE001 — any validation failure aborts the write
+    except Exception as exc:
         log.error("validation failed, keeping last-known-good: %s", exc)
         notify.report_failure(f"Validation failed: {exc}", config)
         return 1

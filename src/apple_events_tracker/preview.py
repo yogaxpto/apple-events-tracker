@@ -47,11 +47,11 @@ class _PreviewHandler(SimpleHTTPRequestHandler):
         self._render = render
         super().__init__(*args, **kwargs)
 
-    def do_GET(self) -> None:  # noqa: N802 — http.server casing
+    def do_GET(self) -> None:
         if self.path in ("/", "/index.html"):
             try:
                 self._render()
-            except Exception as exc:  # noqa: BLE001 — surface render errors in the browser
+            except Exception as exc:
                 self.send_error(500, f"render failed: {exc}")
                 return
         super().do_GET()
@@ -68,7 +68,7 @@ def serve(host: str, port: int, data_dir: Path) -> int:
 
     try:
         render()  # fail fast on a bad template/data before binding the socket
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         print(f"initial render failed: {exc}")
         shutil.rmtree(preview_dir, ignore_errors=True)
         return 1

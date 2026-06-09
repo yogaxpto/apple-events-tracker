@@ -39,7 +39,7 @@ target-version = "py313"
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM", "C4"]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
 
 [tool.mypy]
 python_version = "3.13"

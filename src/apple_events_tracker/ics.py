@@ -126,7 +126,7 @@ def validate_ics(data: bytes) -> None:
         raise ValueError("empty iCalendar payload")
     try:
         cal = Calendar.from_ical(data)
-    except Exception as exc:  # noqa: BLE001 - any parse failure is a validation failure
+    except Exception as exc:
         raise ValueError(f"feed does not parse as iCalendar: {exc}") from exc
 
     if cal.get("VERSION") is None:

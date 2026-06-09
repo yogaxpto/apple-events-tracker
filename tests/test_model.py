@@ -98,7 +98,7 @@ def test_roundtrip_load_save(tmp_path: Path) -> None:
     assert loaded.schema_version == 1
     assert {e.key for e in loaded.events} == {"wwdc-2026-06-08", "wwdc-2024-06-10"}
     # to_dict key order is stable for minimal diffs
-    assert list(loaded.events[0].to_dict().keys())[0] == "key"
+    assert next(iter(loaded.events[0].to_dict())) == "key"
 
 
 def test_load_missing_file_returns_empty_store(tmp_path: Path) -> None:
