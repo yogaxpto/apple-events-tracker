@@ -1,4 +1,4 @@
-.PHONY: post-create test-tools init sync lint format type-check gitignore freeze dev-tools ensure-ipykernel preview
+.PHONY: post-create init sync lint format type-check gitignore freeze dev-tools ensure-ipykernel preview
 
 # Render the site from data/events.json and serve it locally for preview. The page
 # re-renders on each reload, so template/CSS edits show on refresh. Output goes to a
@@ -9,7 +9,7 @@ preview:
 	@uv run python -m apple_events_tracker.preview --port $(PORT)
 
 # Post-create command: verify tools/interpreter and sync dependencies
-post-create: test-tools init ensure-ipykernel sync
+post-create: init ensure-ipykernel sync
 
 # Verify the native Python interpreter is present (provided by the base image, not uv)
 init:
@@ -32,12 +32,6 @@ ensure-ipykernel:
 	else \
 		echo "Skipping ipykernel installation (INSTALL_IPYKERNEL != true)"; \
 	fi
-
-# Verify installed tools
-test-tools:
-	@echo "Running tool verification..."
-	@bash .devcontainer/test_tools.sh > /tmp/test-tools.log 2>&1
-	@echo "✓ Tool verification complete (log: /tmp/test-tools.log)"
 
 # Sync dependencies with uv
 sync:
