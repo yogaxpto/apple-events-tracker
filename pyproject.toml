@@ -3,7 +3,7 @@ name = "apple-events-tracker"
 version = "0.1.0"
 description = "Unofficial, auto-updating tracker for Apple special events — publishes an .ics feed and a static site."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 license = { text = "MIT" }
 authors = [{ name = "Diogo Santos Martins" }]
 dependencies = [
@@ -35,14 +35,14 @@ packages = ["src/apple_events_tracker"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"
 src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true
 files = ["src", "tests"]
 mypy_path = "src"

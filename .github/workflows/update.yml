@@ -33,7 +33,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.11.19" # pin the toolchain for reproducibility (NFR-5)
-          python-version: "3.13"
+          python-version: "3.14"
 
       - name: Sync dependencies
         run: uv sync --frozen

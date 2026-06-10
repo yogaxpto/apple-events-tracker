@@ -9,10 +9,9 @@
 # / system-env approach, so `vscode` is given ownership of /usr/local — editable installs
 # and `uv run` then work without root.
 #
-# Pin to 3.13: the project targets py313 (requires-python, ruff, mypy) and the locked
-# lxml 5.4.0 only ships cp313 wheels — on 3.14 uv would fall back to a source build that
-# fails in this slim image (no C toolchain / libxml2 headers).
-ARG PYTHON_VERSION=3.13
+# Pin to 3.14: the project targets py314 (requires-python, ruff, mypy) and all locked
+# deps (incl. lxml 6.1.1) ship cp314 wheels, so the slim image needs no C toolchain.
+ARG PYTHON_VERSION=3.14
 FROM python:${PYTHON_VERSION}-slim
 
 ARG USERNAME=vscode
