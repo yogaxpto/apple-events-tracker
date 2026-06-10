@@ -56,11 +56,12 @@
         {% endif %}
 
         {% if not next_event.all_day %}
-          <div class="countdown" data-countdown="{{ next_event.start }}" hidden>
-            <div class="countdown__cell"><span class="countdown__num" data-unit="days">0</span><span class="countdown__label">days</span></div>
-            <div class="countdown__cell"><span class="countdown__num" data-unit="hours">0</span><span class="countdown__label">hrs</span></div>
-            <div class="countdown__cell"><span class="countdown__num" data-unit="minutes">0</span><span class="countdown__label">min</span></div>
-            <div class="countdown__cell"><span class="countdown__num" data-unit="seconds">0</span><span class="countdown__label">sec</span></div>
+          <div class="countdown" v-scope="Countdown('{{ next_event.start }}')" v-cloak
+               :data-live="live ? 'now' : null" @mounted="start()" @unmounted="stop()">
+            <div class="countdown__cell"><span class="countdown__num" v-text="days">0</span><span class="countdown__label">days</span></div>
+            <div class="countdown__cell"><span class="countdown__num" v-text="hours">00</span><span class="countdown__label">hrs</span></div>
+            <div class="countdown__cell"><span class="countdown__num" v-text="minutes">00</span><span class="countdown__label">min</span></div>
+            <div class="countdown__cell"><span class="countdown__num" v-text="seconds">00</span><span class="countdown__label">sec</span></div>
           </div>
         {% endif %}
 
@@ -136,36 +137,30 @@
         <h2 id="past-heading">Recent Apple Events</h2>
         <p class="section-sub">A running archive, kept up to date automatically.</p>
       </div>
-      {% if past %}
-        <ul class="cards past__grid">
-          {% for event in past %}
-            <li class="card past-card">
-              <span class="badge badge--{{ event.kind }}">
-                {%- if event.kind == 'wwdc' -%}WWDC
-                {%- elif event.kind == 'special-event' -%}Special Event
-                {%- else -%}Event{%- endif -%}
+      <!-- Single source of event data for the archive: petite-vue renders it on the
+           client with v-for from this one JSON island. No-JS visitors (the region is
+           hidden via v-cloak until mounted) get the <noscript> pointer to the feed. -->
+      <script type="application/json" id="aet-past-events">{{ past_events_json | safe }}</script>
+      <div v-scope="{ past: pastEvents }" v-cloak>
+        <ul v-if="past.length" class="cards past__grid">
+          <li v-for="ev in past" :key="ev.datetime + ev.title" class="card past-card">
+            <span :class="'badge badge--' + ev.kind" v-text="ev.kind_label"></span>
+            <h3 class="past-card__title" v-text="ev.title"></h3>
+            <p class="past-card__date"><time :datetime="ev.datetime" v-text="ev.date_display"></time></p>
+            <p v-if="ev.description" class="past-card__blurb" v-text="ev.description"></p>
+            <a v-if="ev.watch_url" class="past-card__watch" :href="ev.watch_url">
+              <span aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               </span>
-              <h3 class="past-card__title">{{ event.title }}</h3>
-              <p class="past-card__date">
-                <time datetime="{{ event.start }}">{{ event | event_date }}</time>
-              </p>
-              {% if event.description %}
-                <p class="past-card__blurb">{{ event.description }}</p>
-              {% endif %}
-              {% if event.watch_url %}
-                <a class="past-card__watch" href="{{ event.watch_url }}">
-                  <span aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  </span>
-                  Watch
-                </a>
-              {% endif %}
-            </li>
-          {% endfor %}
+              Watch
+            </a>
+          </li>
         </ul>
-      {% else %}
-        <p class="empty-note">No past events recorded yet.</p>
-      {% endif %}
+        <p v-else class="empty-note">No past events recorded yet.</p>
+      </div>
+      <noscript>
+        <p class="empty-note">Enable JavaScript to browse the event archive, or <a href="{{ feed_url }}">subscribe to the calendar feed</a> to get every event in your calendar app.</p>
+      </noscript>
     </section>
   </main>
 
@@ -178,55 +173,64 @@
     </nav>
     <p class="last-updated">
       Last updated
-      <time id="generated-at" datetime="{{ generated_at }}">{{ generated_at }}</time>
-      UTC<span id="local-time"></span>
+      <time datetime="{{ generated_at }}">{{ generated_at }}</time>
+      UTC<span v-scope v-cloak v-text="localTime('{{ generated_at }}')"></span>
     </p>
   </footer>
 
+  <!-- Reactivity via petite-vue (~6KB) — pinned + Subresource-Integrity checked.
+       Progressive enhancement only: every reactive region is hidden via [v-cloak]
+       until mounted, so if this CDN script is blocked or offline the page degrades
+       to the <noscript> notice instead of flashing un-rendered markup. -->
+  <script src="https://unpkg.com/petite-vue@0.4.1/dist/petite-vue.iife.js"
+          integrity="sha384-G3VE2R9nao/dKH0R46Bvk6qIVBAeImWjeTj+SwWOJzJ4N0vQ2RKWuC/cp36l4Iba"
+          crossorigin="anonymous" defer></script>
   <script>
-    // Progressive enhancement only (WEB-1, WEB-4): no tracking, no network calls.
-    // The page is fully usable with JavaScript disabled.
-    (function () {
-      // 1) "Last updated" in the viewer's local time.
-      var el = document.getElementById("generated-at");
-      var local = document.getElementById("local-time");
-      if (el && local) {
-        var d = new Date(el.getAttribute("datetime"));
-        if (!isNaN(d.getTime())) {
-          local.textContent = " (" + d.toLocaleString() + " your time)";
-        }
+    // Deferred scripts run in order before DOMContentLoaded, so PetiteVue is ready.
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.PetiteVue) return; // CDN blocked/offline → keep the no-JS fallback.
+
+      var island = document.getElementById("aet-past-events");
+      var pastEvents = island ? JSON.parse(island.textContent) : [];
+
+      // "Last updated" in the viewer's local time.
+      function localTime(iso) {
+        var d = new Date(iso);
+        return isNaN(d.getTime()) ? "" : " (" + d.toLocaleString() + " your time)";
       }
 
-      // 2) Live countdown to the upcoming event.
-      var cd = document.querySelector("[data-countdown]");
-      if (!cd) return;
-      var target = new Date(cd.getAttribute("data-countdown"));
-      if (isNaN(target.getTime())) return;
-      var units = {
-        days: cd.querySelector('[data-unit="days"]'),
-        hours: cd.querySelector('[data-unit="hours"]'),
-        minutes: cd.querySelector('[data-unit="minutes"]'),
-        seconds: cd.querySelector('[data-unit="seconds"]')
-      };
-      function pad(n) { return (n < 10 ? "0" : "") + n; }
-      function tick() {
-        var diff = Math.floor((target.getTime() - Date.now()) / 1000);
-        if (diff <= 0) {
-          cd.setAttribute("data-live", "now");
-          units.days.textContent = units.hours.textContent =
-            units.minutes.textContent = units.seconds.textContent = "00";
-          clearInterval(timer);
-          return;
-        }
-        units.days.textContent = Math.floor(diff / 86400);
-        units.hours.textContent = pad(Math.floor((diff % 86400) / 3600));
-        units.minutes.textContent = pad(Math.floor((diff % 3600) / 60));
-        units.seconds.textContent = pad(diff % 60);
+      // Live countdown to the upcoming event; reactive fields drive the template.
+      function Countdown(iso) {
+        return {
+          target: new Date(iso),
+          days: 0, hours: "00", minutes: "00", seconds: "00", live: false, timer: null,
+          start: function () {
+            if (isNaN(this.target.getTime())) return;
+            this.tick();
+            var self = this;
+            this.timer = setInterval(function () { self.tick(); }, 1000);
+          },
+          stop: function () { if (this.timer) clearInterval(this.timer); },
+          tick: function () {
+            var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+            var diff = Math.floor((this.target.getTime() - Date.now()) / 1000);
+            if (diff <= 0) {
+              this.live = true;
+              this.days = 0; this.hours = this.minutes = this.seconds = "00";
+              this.stop();
+              return;
+            }
+            this.days = Math.floor(diff / 86400);
+            this.hours = pad(Math.floor((diff % 86400) / 3600));
+            this.minutes = pad(Math.floor((diff % 3600) / 60));
+            this.seconds = pad(diff % 60);
+          }
+        };
       }
-      cd.hidden = false;
-      tick();
-      var timer = setInterval(tick, 1000);
-    })();
+
+      // One app, global scope shared by every v-scope region on the page.
+      PetiteVue.createApp({ pastEvents: pastEvents, localTime: localTime, Countdown: Countdown }).mount();
+    });
   </script>
 </body>
 </html>

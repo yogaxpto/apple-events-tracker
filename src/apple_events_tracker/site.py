@@ -1,13 +1,16 @@
 """Static website renderer (FR-12..FR-15, §7).
 
 Renders ``templates/index.html.j2`` to ``<out_dir>/index.html`` at build time from an
-:class:`~apple_events_tracker.model.EventStore`, so the page works without JavaScript
-(WEB-1). The page links a self-hosted stylesheet only — no third-party trackers, cookies,
-fonts, or CDNs (WEB-4/WEB-5).
+:class:`~apple_events_tracker.model.EventStore``. The SEO-critical hero, ``<meta>``/OG
+tags, and subscribe links are server-rendered, so they work without JavaScript; the
+event archive, countdown, and local-time clock are progressively enhanced on the client
+by petite-vue (one pinned, SRI-checked CDN script) reading a single JSON data island.
+CSS and fonts remain first-party — no trackers, cookies, or web fonts.
 """
 
 from __future__ import annotations
 
+import json
 import shutil
 from pathlib import Path
 from typing import Any
@@ -39,6 +42,38 @@ _MONTHS = (
     "November",
     "December",
 )
+
+
+_KIND_LABELS = {"wwdc": "WWDC", "special-event": "Special Event"}
+
+
+def _event_view(event: Event) -> dict[str, Any]:
+    """Display-ready view of an event — the single shape the page renders from.
+
+    Dates are formatted here (one place, in Python) and carried in the payload, so
+    the client renderer never re-implements the formatting logic.
+    """
+    return {
+        "title": event.title,
+        "kind": event.kind,
+        "kind_label": _KIND_LABELS.get(event.kind, "Event"),
+        "date_display": _format_event_date(event),
+        "datetime": event.start,
+        "description": event.description or None,
+        "watch_url": event.watch_url,
+    }
+
+
+def _events_json(events: list[Event]) -> str:
+    """Serialize events for an inline ``<script type="application/json">`` island.
+
+    Element text is *not* HTML-entity-decoded, so we can't rely on Jinja
+    autoescaping (it would corrupt the JSON). Instead this is rendered with
+    ``| safe`` and the only sequences that could break out of the script element —
+    ``<``, ``>``, ``&`` — are neutralized to their JSON unicode escapes.
+    """
+    raw = json.dumps([_event_view(e) for e in events], ensure_ascii=False, separators=(",", ":"))
+    return raw.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
 
 
 def _format_event_date(event: Event) -> str:
@@ -103,6 +138,7 @@ def _build_context(
     return {
         "upcoming": store.upcoming(),
         "past": store.past(),
+        "past_events_json": _events_json(store.past()),
         "generated_at": generated_at,
         "feed_url": feed_url,
         "webcal_url": config.site.webcal_url,

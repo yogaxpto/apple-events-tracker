@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import re
 from pathlib import Path
 
 from markupsafe import escape
@@ -86,6 +88,50 @@ def test_render_site_contains_expected_content(tmp_path: Path) -> None:
     assert index.exists()
     assert index.read_text(encoding="utf-8") == html
     assert (tmp_path / "assets" / "style.css").exists()
+
+
+def test_past_events_rendered_from_single_json_island(tmp_path: Path) -> None:
+    """The archive is delivered once as a JSON data island and rendered client-side.
+
+    petite-vue renders the cards with v-for from this island, so no cards are
+    server-rendered, and the island carries display-ready fields so the client
+    never re-implements formatting.
+    """
+    html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+
+    match = re.search(
+        r'<script type="application/json" id="aet-past-events">(.*?)</script>',
+        html,
+        re.S,
+    )
+    assert match is not None
+    events = json.loads(match.group(1))
+
+    # Both past events present, upcoming excluded (it lives in the hero, not the archive).
+    assert [e["title"] for e in events] == ["Apple Special Event (Sept 2025)", "WWDC25"]
+    assert all(e["title"] != "WWDC26" for e in events)
+
+    # Display-ready shape: the server formats the date once, the client just places it.
+    first = events[0]
+    assert first["kind_label"] == "Special Event"
+    assert first["date_display"] == "September 9, 2025"
+
+    # Cards are not server-rendered — the v-for template is the only past-card markup.
+    assert html.count('class="card past-card"') == 1
+    assert 'v-for="ev in past"' in html
+    assert 'v-scope="{ past: pastEvents }"' in html
+
+
+def test_render_site_loads_petite_vue_with_integrity(tmp_path: Path) -> None:
+    """The reactive runtime is a pinned, SRI-pinned CDN script (supply-chain safety)."""
+    html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+
+    assert "petite-vue@0.4.1/dist/petite-vue.iife.js" in html
+    assert 'integrity="sha384-' in html
+    assert 'crossorigin="anonymous"' in html
+    # No-JS visitors still get a route to the data.
+    assert "<noscript>" in html
+    assert "subscribe to the calendar feed" in html
 
 
 def test_render_site_no_upcoming_message(tmp_path: Path) -> None:
