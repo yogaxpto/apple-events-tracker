@@ -348,3 +348,44 @@ section { padding: clamp(3rem, 7vw, 6rem) 0; }
   html { scroll-behavior: auto; }
   * { transition: none !important; }
 }
+
+/* --- Light theme ------------------------------------------------------------- */
+/* Dark is the default (the :root tokens above). When the visitor's browser/OS is
+   set to a light appearance, re-tint the same tokens — and the few rules that
+   hardcode dark-only colors. Placed last so these overrides win without !important
+   (media queries add no specificity; source order decides). */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f5f5f7;
+    --bg-soft: #ffffff;
+    --surface: rgba(0, 0, 0, 0.03);
+    --surface-2: rgba(0, 0, 0, 0.05);
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.22);
+    --text: #1d1d1f;
+    --text-dim: #515154;
+    --text-faint: #57575b;      /* deepened for WCAG AA on small footer text */
+    --accent: #0071e3;          /* Apple blue, deepened for contrast on white */
+    --shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.22);
+  }
+
+  /* Soft light wash instead of the dark-blue glow. */
+  .aurora {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #e3ecff 0%, transparent 60%),
+      var(--bg);
+  }
+  .aurora__blob--1 { opacity: 0.14; }
+  .aurora__blob--2 { opacity: 0.12; }
+  .aurora__blob--3 { opacity: 0.10; }
+
+  /* Frosted-glass surfaces flip from dark to light translucency. */
+  .topbar { background: rgba(255, 255, 255, 0.65); }
+
+  /* Gradient hero text: white→grey is invisible on light, so darken it. */
+  .hero__title { background: linear-gradient(180deg, #1d1d1f 25%, #51606f 100%); }
+
+  /* Badge tints tuned for legibility on a light card. */
+  .badge--wwdc { color: #0a5bbf; border-color: rgba(0, 113, 227, 0.35); background: rgba(0, 113, 227, 0.08); }
+  .badge--special-event { color: #8d28c9; border-color: rgba(159, 58, 214, 0.35); background: rgba(159, 58, 214, 0.08); }
+}
