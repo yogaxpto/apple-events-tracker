@@ -33,7 +33,7 @@ Direct `uv` usage:
 - [data/](data/) — `events.json` (canonical last-known-good, committed), `seed_events.json` (curated historical backfill), `http_cache.json` (ETag/Last-Modified).
 - [docs/](docs/) — GitHub Pages root: generated `index.html`, `feed.ics`, `assets/`.
 - [tests/](tests/) — pytest suite; `tests/fixtures/` holds saved HTML snapshots the parser asserts against (refresh intentionally when Apple changes the page).
-- [.github/workflows/](.github/workflows/) — `update.yml` (weekly cron + dispatch pipeline) and `ci.yml` (lint/type/test on push).
+- [.github/workflows/](.github/workflows/) — `update.yml` (daily cron + dispatch pipeline; conditional fetch means most runs only refresh time-based status) and `ci.yml` (lint/type/test on push).
 
 **Note:** `data/` and `docs/` are intentionally committed (canonical state + published site) — not gitignored.
 

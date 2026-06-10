@@ -6,8 +6,11 @@ import json
 import shutil
 from pathlib import Path
 
-from apple_events_tracker import ics
+import pytest
+
+from apple_events_tracker import cli, config, ics
 from apple_events_tracker.cli import run
+from apple_events_tracker.fetch import FetchResult
 
 REPO = Path(__file__).parent.parent
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -71,6 +74,57 @@ def test_dry_run_writes_nothing(tmp_path: Path) -> None:
     assert code == 0
     assert not (data_dir / "events.json").exists()
     assert not (docs_dir / "feed.ics").exists()
+
+
+def _online_args(data_dir: Path, docs_dir: Path, now: str) -> list[str]:
+    return ["--data-dir", str(data_dir), "--docs-dir", str(docs_dir), "--now", now]
+
+
+def test_304_refreshes_status_without_scrape(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A 304 must still flip a passed event upcoming → past and republish (FR-1)."""
+    data_dir, docs_dir = _setup(tmp_path)
+    # Establish last-known-good with WWDC26 upcoming as of its date.
+    run(_args(data_dir, docs_dir, "apple-events-with-recent.html"))
+    before = json.loads((data_dir / "events.json").read_text())
+    wwdc_before = next(e for e in before["events"] if e["key"] == "wwdc-2026-06-08")
+    assert wwdc_before["status"] == "upcoming"
+
+    # Apple's page is unchanged (304), but two days have passed.
+    monkeypatch.setattr(
+        cli,
+        "fetch_conditional",
+        lambda *a, **k: FetchResult(url=config.SOURCE_URL, status_code=304, text="", headers={}),
+    )
+    code = run(_online_args(data_dir, docs_dir, "2026-06-10T17:00:00Z"))
+    assert code == 0
+
+    after = json.loads((data_dir / "events.json").read_text())
+    wwdc_after = next(e for e in after["events"] if e["key"] == "wwdc-2026-06-08")
+    assert wwdc_after["status"] == "past"  # flipped without a fresh scrape
+    assert wwdc_after["sequence"] == wwdc_before["sequence"] + 1
+    assert after["generated_at"] == "2026-06-10T17:00:00Z"
+    # Hero no longer headlines the passed event.
+    index = (docs_dir / "index.html").read_text()
+    assert "Nothing on the calendar" in index
+
+
+def test_304_no_due_transitions_is_noop(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A 304 with nothing newly past leaves the committed state untouched (FR-8)."""
+    data_dir, docs_dir = _setup(tmp_path)
+    run(_args(data_dir, docs_dir, "apple-events-with-recent.html"))
+    before = (data_dir / "events.json").read_bytes()
+
+    monkeypatch.setattr(
+        cli,
+        "fetch_conditional",
+        lambda *a, **k: FetchResult(url=config.SOURCE_URL, status_code=304, text="", headers={}),
+    )
+    # Same instant as last-known-good: WWDC26 is still upcoming, no flip due.
+    code = run(_online_args(data_dir, docs_dir, "2026-06-08T17:00:00Z"))
+    assert code == 0
+    assert (data_dir / "events.json").read_bytes() == before
 
 
 def test_broken_page_keeps_last_known_good_and_fails(tmp_path: Path) -> None:

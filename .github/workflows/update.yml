@@ -1,10 +1,13 @@
 name: Update Apple events
 
-# AUTO-1: weekly cron (OD-2) + manual dispatch. GitHub cron is best-effort and may be
-# delayed/skipped under load (AUTO-5) — trigger manually for time-sensitive moments.
+# AUTO-1: daily cron + manual dispatch. The scrape itself is conditional (ETag/
+# Last-Modified), so most days return 304 and only recompute time-based status — a
+# light, polite request rate that still flips events upcoming → past within a day
+# instead of leaving a passed event headlined for a week. GitHub cron is best-effort
+# and may be delayed/skipped under load (AUTO-5) — trigger manually when it matters.
 on:
   schedule:
-    - cron: "0 17 * * 1" # Mondays 17:00 UTC
+    - cron: "0 17 * * *" # daily 17:00 UTC
   workflow_dispatch:
 
 # AUTO-2: never let two runs race on the committed state.

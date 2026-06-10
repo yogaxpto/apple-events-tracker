@@ -87,8 +87,15 @@ def run(argv: list[str] | None = None) -> int:
             cache = HttpCache.load(cache_file)
             fetched = fetch_conditional(args.source_url, cache, config)
             if fetched.not_modified:
-                log.info("304 Not Modified — nothing to do (FR-1).")
-                return 0
+                # FR-1: Apple's page is unchanged, but time keeps moving — an event that
+                # has now happened must still flip upcoming → past even with no fresh HTML.
+                # Recompute status from last-known-good and rebuild only if that changes
+                # something, so the published page stays correct between full scrapes
+                # instead of advertising a past event as "upcoming".
+                log.info("304 Not Modified — refreshing time-based status from last-known-good.")
+                return _refresh_status(
+                    args, now, config, events_file, seed_file, feed_file, index_file, docs_dir
+                )
             html = fetched.text
             base_url = fetched.url
             if not args.dry_run:
@@ -157,7 +164,21 @@ def run(argv: list[str] | None = None) -> int:
         )
         return 0
 
-    # --- 5. validate, then publish (RES-2: validate the feed before any write) --------
+    # --- 5/6. validate, publish, notify -----------------------------------------------
+    return _publish(result, config, now, events_file, feed_file, index_file, docs_dir, seed_keys)
+
+
+def _publish(
+    result: diff.DiffResult,
+    config: RuntimeConfig,
+    now: datetime,
+    events_file: Path,
+    feed_file: Path,
+    index_file: Path,
+    docs_dir: Path,
+    seed_keys: set[str],
+) -> int:
+    """Validate the merged store, then write events.json/feed.ics/site and notify (RES-2)."""
     generated_at = diff.iso_utc(now)
     merged = result.merged
     merged.generated_at = generated_at
@@ -176,10 +197,42 @@ def run(argv: list[str] | None = None) -> int:
     site.render_site(merged, config, generated_at, out_dir=docs_dir)
     log.info("wrote %s, %s, and %s", events_file, feed_file, index_file)
 
-    # --- 6. notify on genuinely new *upcoming* events (FR-18) -------------------------
+    # Notify on genuinely new *upcoming* events (FR-18).
     new_upcoming = [e for e in result.new if e.status == "upcoming" and e.key not in seed_keys]
     notify.notify_new_events(new_upcoming, config)
     return 0
+
+
+def _refresh_status(
+    args: argparse.Namespace,
+    now: datetime,
+    config: RuntimeConfig,
+    events_file: Path,
+    seed_file: Path,
+    feed_file: Path,
+    index_file: Path,
+    docs_dir: Path,
+) -> int:
+    """Recompute time-based status from last-known-good without a fresh scrape (304 path).
+
+    Carries every known event forward, flipping upcoming → past for any whose date has
+    passed, and republishes only if that produced a change. Keeps the static page correct
+    between full scrapes — Apple's page rarely changes, so most runs land here.
+    """
+    baseline, seed_keys = _load_baseline(events_file, seed_file)
+    result = diff.classify(baseline, [], now)
+
+    for e in result.changed:
+        log.info("CHANGED  %s  %s → %s (seq=%d)", e.key, e.title, e.status, e.sequence)
+
+    bootstrap = not (events_file.exists() and feed_file.exists() and index_file.exists())
+    if not result.has_changes and not bootstrap:
+        log.info("no status transitions due — no write, no commit (FR-8).")
+        return 0
+    if args.dry_run:
+        log.info("dry-run: %d status change(s) pending; writing nothing.", len(result.changed))
+        return 0
+    return _publish(result, config, now, events_file, feed_file, index_file, docs_dir, seed_keys)
 
 
 def _combine(scraped: list[Event], seed: list[Event]) -> list[Event]:

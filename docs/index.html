@@ -9,16 +9,16 @@
   <meta property="og:site_name" content="Apple Events Tracker" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://yogaxpto.github.io/apple-events-tracker/" />
-  <meta property="og:title" content="WWDC26 — June 8, 2026" />
-  <meta property="og:description" content="Next Apple event: WWDC26 on June 8, 2026. Subscribe once to the calendar feed and never miss a keynote." />
-  <meta property="og:image" content="https://yogaxpto.github.io/apple-events-tracker/assets/og.png?v=2026-06-08T17%3A00%3A00Z" />
+  <meta property="og:title" content="Apple Events Tracker" />
+  <meta property="og:description" content="Auto-updating tracker for Apple special events. Subscribe once to a calendar feed and never miss a keynote." />
+  <meta property="og:image" content="https://yogaxpto.github.io/apple-events-tracker/assets/og.png?v=2026-06-10T17%3A00%3A00Z" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="WWDC26 — June 8, 2026" />
+  <meta property="og:image:alt" content="Apple Events Tracker" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="WWDC26 — June 8, 2026" />
-  <meta name="twitter:description" content="Next Apple event: WWDC26 on June 8, 2026. Subscribe once to the calendar feed and never miss a keynote." />
-  <meta name="twitter:image" content="https://yogaxpto.github.io/apple-events-tracker/assets/og.png?v=2026-06-08T17%3A00%3A00Z" />
+  <meta name="twitter:title" content="Apple Events Tracker" />
+  <meta name="twitter:description" content="Auto-updating tracker for Apple special events. Subscribe once to a calendar feed and never miss a keynote." />
+  <meta name="twitter:image" content="https://yogaxpto.github.io/apple-events-tracker/assets/og.png?v=2026-06-10T17%3A00%3A00Z" />
   <title>Apple Events Tracker</title>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
@@ -45,21 +45,10 @@
     <!-- Hero ------------------------------------------------------------------>
     <section class="hero" aria-labelledby="upcoming-heading">
       <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Unofficial event tracker</p>
-        <h1 id="upcoming-heading" class="hero__title">WWDC26</h1>
-        <p class="hero__date">
-          <time datetime="2026-06-08">June 8, 2026</time>
-        </p>
-          <p class="hero__blurb">Upcoming Apple event.</p>
-
-
+        <h1 id="upcoming-heading" class="hero__title hero__title--quiet">Nothing on the calendar&nbsp;yet</h1>
+        <p class="hero__blurb hero-empty">No upcoming Apple event announced right now. Subscribe below and the next one will appear automatically.</p>
         <div class="hero__actions">
-          <a class="btn btn--primary" href="webcal://yogaxpto.github.io/apple-events-tracker/feed.ics">Add to calendar</a>
-            <a class="btn btn--ghost" href="https://www.apple.com/apple-events/event-stream/">
-              <span class="btn__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              </span>
-              Watch the event
-            </a>
+          <a class="btn btn--primary" href="webcal://yogaxpto.github.io/apple-events-tracker/feed.ics">Subscribe for the next one</a>
         </div>
     </section>
 
@@ -116,6 +105,20 @@
         <p class="section-sub">A running archive, kept up to date automatically.</p>
       </div>
         <ul class="cards past__grid">
+            <li class="card past-card">
+              <span class="badge badge--wwdc">WWDC</span>
+              <h3 class="past-card__title">WWDC26</h3>
+              <p class="past-card__date">
+                <time datetime="2026-06-08">June 8, 2026</time>
+              </p>
+                <p class="past-card__blurb">Upcoming Apple event.</p>
+                <a class="past-card__watch" href="https://www.apple.com/apple-events/event-stream/">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                  Watch
+                </a>
+            </li>
             <li class="card past-card">
               <span class="badge badge--special-event">Special Event</span>
               <h3 class="past-card__title">Apple Event</h3>
@@ -433,7 +436,7 @@
     </nav>
     <p class="last-updated">
       Last updated
-      <time id="generated-at" datetime="2026-06-08T17:00:00Z">2026-06-08T17:00:00Z</time>
+      <time id="generated-at" datetime="2026-06-10T17:00:00Z">2026-06-10T17:00:00Z</time>
       UTC<span id="local-time"></span>
     </p>
   </footer>

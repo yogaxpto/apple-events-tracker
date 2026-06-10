@@ -72,7 +72,9 @@ Published artifacts (committed to git, served by Pages):
   before any file is written.
 - **Never delete** — known events (seed + previously seen) are merged, never dropped.
 - **Conditional + polite** — `If-None-Match` / `If-Modified-Since`, exponential backoff,
-  a descriptive `User-Agent`, and a low (weekly) request rate.
+  and a descriptive `User-Agent`. The daily run is conditional, so unchanged days return
+  `304` and only refresh time-based status — Apple's HTML is fetched in full only when it
+  actually changes.
 - **Alerting** — a failing run opens/updates a single tracking GitHub issue.
 
 ## Configure

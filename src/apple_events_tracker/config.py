@@ -16,9 +16,11 @@ from dataclasses import dataclass, field
 # --------------------------------------------------------------------------------------
 # Repo identity / public URLs
 # --------------------------------------------------------------------------------------
-# CONFIGURE ME: replace these placeholders, or rely on GITHUB_REPOSITORY in CI.
-_PLACEHOLDER_OWNER = "OWNER"
-_PLACEHOLDER_REPO = "REPO"
+# Repo identity defaults. CI overrides these from GITHUB_REPOSITORY, but they must hold
+# the real owner/repo so local runs and `make preview` emit correct public URLs and stable
+# event UIDs (DM-2) — a placeholder here silently bakes the wrong host into the feed.
+_PLACEHOLDER_OWNER = "yogaxpto"
+_PLACEHOLDER_REPO = "apple-events-tracker"
 
 
 @dataclass(frozen=True)
