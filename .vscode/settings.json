@@ -7,6 +7,13 @@
       "source.fixAll.ruff": "explicit"
     }
   },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.ruff_cache": true,
+    "**/.mypy_cache": true,
+    "**/.pytest_cache": true,
+    "**/*.egg-info": true
+  },
   "ruff.nativeServer": true,
   "ruff.configurationPreference": "filesystemFirst",
   "mypy-type-checker.args": ["--config-file=pyproject.toml"],
