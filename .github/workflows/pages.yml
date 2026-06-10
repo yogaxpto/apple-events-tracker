@@ -1,0 +1,45 @@
+name: Deploy Pages
+
+# Publishes the committed site (docs/) to GitHub Pages whenever it changes on main —
+# e.g. a manual fix committed by a human. The scheduled pipeline (update.yml) deploys
+# in-run for its own bot commits; those are pushed with GITHUB_TOKEN, which by design
+# does not trigger this workflow, so there is no double-deploy on scheduled runs.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# Least privilege: only what a Pages deploy needs.
+permissions:
+  pages: write
+  id-token: write
+
+# Never let two Pages deploys race; let an in-flight one finish.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
