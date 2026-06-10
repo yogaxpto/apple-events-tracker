@@ -104,6 +104,10 @@ def test_recent_gallery_fixture_extracts_real_events() -> None:
     # Every parsed event carries its own gallery date — none borrowed from elsewhere.
     assert all(e.status == "past" for e in result.events)
     assert all(e.title in {"Apple Event", "WWDC"} for e in result.events)
+    # The gallery's "Watch" buttons are in-page modal players whose href is a raw HLS
+    # stream manifest (events-delivery.apple.com/...m3u8). Those are not navigable pages,
+    # so none may be published as a watch link (regression: they rendered as empty pages).
+    assert all(e.watch_url is None for e in result.events)
 
 
 # --- DS-1: active-window fixture (the real saved page) ---------------------------------

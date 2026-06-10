@@ -216,7 +216,7 @@ def _parse_hero(soup: BeautifulSoup, base_url: str) -> dict[str, object] | None:
                 continue
             label = a.get_text(" ", strip=True).lower()
             href = str(a["href"])
-            if href.lower().endswith(".ics"):
+            if not cfg.is_navigable_watch_url(href):  # skip .ics and raw stream manifests
                 continue
             if "watch" in label or "stream" in label or "watch" in href.lower():
                 watch_url = urljoin(base_url, href)
@@ -257,9 +257,13 @@ def _parse_recent(soup: BeautifulSoup, base_url: str) -> tuple[list[dict[str, ob
         event_date = _find_long_date(_text(li.select_one(".subhead"))) or _find_long_date(_text(li))
         if not title or event_date is None:
             continue
+        # Only publish a "Watch" link that points to a real page. The live gallery's
+        # Watch button is a films-modal player whose href is a raw HLS stream manifest
+        # (events-delivery.apple.com/...m3u8) — navigating to it shows a blank page — so
+        # skip non-navigable targets and leave watch_url unset when there is no page link.
         watch_url: str | None = None
         for a in li.find_all("a", href=True):
-            if isinstance(a, Tag):
+            if isinstance(a, Tag) and cfg.is_navigable_watch_url(str(a["href"])):
                 watch_url = urljoin(base_url, str(a["href"]))
                 break
         # blurb: first paragraph that is not the date line

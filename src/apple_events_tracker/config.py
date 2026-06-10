@@ -221,6 +221,22 @@ HERO_SELECTORS: list[str] = [
 # The path itself contains a build hash and must be discovered, never hardcoded.
 ADD_TO_CALENDAR_TEXT = re.compile(r"add to calendar|add to your calendar", re.IGNORECASE)
 
+# A published "Watch" link must point to a human-watchable *page*. Apple's recent-event
+# "Watch" buttons are in-page modal players (``films-modal``) whose ``href`` is a raw HLS
+# stream manifest (``events-delivery.apple.com/.../vod_index-*.m3u8``); the ``.ics``
+# "Add to calendar" link is not a watch target either. A browser navigated straight to
+# any of these renders a blank/empty page, so they must never become a watch link.
+NON_NAVIGABLE_WATCH_URL = re.compile(
+    r"\.m3u8?(?:$|\?)|\.ics(?:$|\?)|events-delivery\.apple\.com",
+    re.IGNORECASE,
+)
+
+
+def is_navigable_watch_url(href: str) -> bool:
+    """True if ``href`` is a real page we can publish as a 'Watch' link — not a raw media
+    stream manifest or the ``.ics`` calendar file."""
+    return bool(href) and NON_NAVIGABLE_WATCH_URL.search(href) is None
+
 
 @dataclass(frozen=True)
 class KindRule:

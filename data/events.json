@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-10T17:00:00Z",
+  "generated_at": "2026-06-10T21:19:35Z",
   "events": [
     {
       "key": "wwdc-2026-06-08",
@@ -31,10 +31,10 @@
       "all_day": true,
       "description": "Awe dropping. Watch the keynote introducing the latest iPhone.",
       "source_url": "https://www.apple.com/apple-events/",
-      "watch_url": "https://www.youtube.com/watch?v=appleevent-sep-2025",
-      "sequence": 0,
+      "watch_url": null,
+      "sequence": 1,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-08T17:00:00Z"
+      "last_changed": "2026-06-10T21:19:35Z"
     },
     {
       "key": "wwdc-2025-06-09",
@@ -48,10 +48,10 @@
       "all_day": true,
       "description": "A first look at the latest software updates across Apple platforms.",
       "source_url": "https://www.apple.com/apple-events/",
-      "watch_url": "https://www.youtube.com/watch?v=wwdc25keynote",
-      "sequence": 0,
+      "watch_url": null,
+      "sequence": 1,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-08T17:00:00Z"
+      "last_changed": "2026-06-10T21:19:35Z"
     },
     {
       "key": "special-event-2025-05-07",
@@ -65,10 +65,10 @@
       "all_day": true,
       "description": "Let loose. The latest iPad, unveiled.",
       "source_url": "https://www.apple.com/apple-events/",
-      "watch_url": "https://www.youtube.com/watch?v=appleevent-may-2025",
-      "sequence": 0,
+      "watch_url": null,
+      "sequence": 1,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-08T17:00:00Z"
+      "last_changed": "2026-06-10T21:19:35Z"
     },
     {
       "key": "special-event-2024-10-28",
@@ -82,10 +82,10 @@
       "all_day": true,
       "description": "Mac comes alive with new chips.",
       "source_url": "https://www.apple.com/apple-events/",
-      "watch_url": "https://www.youtube.com/watch?v=appleevent-oct-2024",
-      "sequence": 0,
+      "watch_url": null,
+      "sequence": 1,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-08T17:00:00Z"
+      "last_changed": "2026-06-10T21:19:35Z"
     },
     {
       "key": "wwdc-2024-06-10",
