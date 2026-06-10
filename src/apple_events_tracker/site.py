@@ -16,6 +16,7 @@ from urllib.parse import quote
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import config as config_module
+from . import og
 from .config import RuntimeConfig
 from .model import Event, EventStore
 
@@ -57,6 +58,36 @@ def _format_event_date(event: Event) -> str:
     return f"{base} at {hour12}{minute} {suffix} PT"
 
 
+def _og_copy(store: EventStore) -> dict[str, str]:
+    """Social-preview copy derived from the next upcoming event (or a fallback).
+
+    ``card_title``/``card_subtitle`` feed the rendered og.png; ``og_title``/
+    ``og_description`` feed the ``<meta>`` tags.
+    """
+    upcoming = store.upcoming()
+    if upcoming:
+        event = upcoming[0]
+        date_str = _format_event_date(event)
+        return {
+            "card_title": event.title,
+            "card_subtitle": date_str,
+            "og_title": f"{event.title} — {date_str}",
+            "og_description": (
+                f"Next Apple event: {event.title} on {date_str}. "
+                "Subscribe once to the calendar feed and never miss a keynote."
+            ),
+        }
+    return {
+        "card_title": "Apple Events Tracker",
+        "card_subtitle": "Tracking Apple's special events",
+        "og_title": "Apple Events Tracker",
+        "og_description": (
+            "Auto-updating tracker for Apple special events. "
+            "Subscribe once to a calendar feed and never miss a keynote."
+        ),
+    }
+
+
 def _build_context(
     store: EventStore,
     config: RuntimeConfig,
@@ -64,6 +95,11 @@ def _build_context(
 ) -> dict[str, Any]:
     feed_url = config.site.feed_url
     google_calendar_url = f"https://calendar.google.com/calendar/r?cid={quote(feed_url, safe='')}"
+    base_url = config.site.pages_base_url
+    og_copy = _og_copy(store)
+    # Cache-bust the image URL so Facebook/iMessage re-fetch when the page rebuilds
+    # (rebuilds only happen on a real change), instead of serving a stale card.
+    cache_key = quote(generated_at, safe="") or "v1"
     return {
         "upcoming": store.upcoming(),
         "past": store.past(),
@@ -74,6 +110,10 @@ def _build_context(
         "google_calendar_url": google_calendar_url,
         "source_url": config_module.SOURCE_URL,
         "disclaimer": config_module.DISCLAIMER,
+        "page_url": f"{base_url}/",
+        "og_title": og_copy["og_title"],
+        "og_description": og_copy["og_description"],
+        "og_image_url": f"{base_url}/assets/og.png?v={cache_key}",
     }
 
 
@@ -103,6 +143,10 @@ def render_site(
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(html, encoding="utf-8")
+
+    # Social link-preview card (FB / iMessage / Twitter) referenced by the og:image tag.
+    og_copy = _og_copy(store)
+    og.render_og_image(out, title=og_copy["card_title"], subtitle=og_copy["card_subtitle"])
 
     assets = out / "assets"
     assets.mkdir(parents=True, exist_ok=True)

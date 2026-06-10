@@ -75,11 +75,11 @@ def test_build_calendar_parses_and_validates() -> None:
 
 def test_calendar_metadata() -> None:
     cal = Calendar.from_ical(build_calendar(_store(), _config()))
-    assert str(cal.get("PRODID")) == "-//Apple Events Tracker (Unofficial)//EN"
+    assert str(cal.get("PRODID")) == "-//Apple Events Tracker//EN"
     assert str(cal.get("METHOD")) == "PUBLISH"
     assert str(cal.get("VERSION")) == "2.0"
     assert str(cal.get("CALSCALE")) == "GREGORIAN"
-    assert str(cal.get("X-WR-CALNAME")) == "Apple Events (Unofficial)"
+    assert str(cal.get("X-WR-CALNAME")) == "Apple Events"
     assert cal.get("REFRESH-INTERVAL") is not None
     assert "REFRESH-INTERVAL;VALUE=DURATION:PT12H" in build_calendar(_store(), _config()).decode()
     assert cal.get("X-PUBLISHED-TTL") is not None

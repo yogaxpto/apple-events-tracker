@@ -1,6 +1,6 @@
-# Apple Events Tracker (Unofficial)
+# Apple Events Tracker
 
-An unofficial, automatically-updating tracker for Apple special events. A scheduled
+An automatically-updating tracker for Apple special events. A scheduled
 GitHub Action scrapes <https://www.apple.com/apple-events/>, keeps a structured record in
 git, and publishes:
 
@@ -11,7 +11,7 @@ There is no server and no backend — git holds the canonical last-known-good st
 failed or suspicious scrape never overwrites it, so the published feed never breaks or
 empties.
 
-> **Disclaimer.** This is an unofficial project, **not affiliated with, authorized, or
+> **Disclaimer.** This project is **not affiliated with, authorized, or
 > endorsed by Apple Inc.** "Apple", "WWDC", and event names are trademarks of Apple Inc.
 > This tracker only collects publicly available scheduling metadata and links out to
 > Apple's media rather than copying it.

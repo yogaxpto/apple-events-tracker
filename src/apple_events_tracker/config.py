@@ -68,7 +68,7 @@ def load_site_config() -> SiteConfig:
 # HTTP
 # --------------------------------------------------------------------------------------
 SOURCE_URL = "https://www.apple.com/apple-events/"
-USER_AGENT = "apple-events-tracker/0.1 (+https://github.com/{owner}/{repo}; unofficial calendar)"
+USER_AGENT = "apple-events-tracker/0.1 (+https://github.com/{owner}/{repo})"
 REQUEST_TIMEOUT_SECONDS = 20.0
 MAX_RETRIES = 4
 BACKOFF_BASE_SECONDS = 1.5  # exponential: base ** attempt
@@ -76,8 +76,8 @@ BACKOFF_BASE_SECONDS = 1.5  # exponential: base ** attempt
 # --------------------------------------------------------------------------------------
 # Calendar / feed metadata
 # --------------------------------------------------------------------------------------
-PRODID = "-//Apple Events Tracker (Unofficial)//EN"
-CAL_NAME = "Apple Events (Unofficial)"
+PRODID = "-//Apple Events Tracker//EN"
+CAL_NAME = "Apple Events"
 CAL_TIMEZONE = "America/Los_Angeles"  # Apple states event times in Pacific Time
 REFRESH_INTERVAL = "PT12H"
 
@@ -85,8 +85,11 @@ REFRESH_INTERVAL = "PT12H"
 ENABLE_VALARM = True
 VALARM_MINUTES_BEFORE = 30
 
+# Legal disclaimer used in the feed (CALDESC + event descriptions) and on the site. The
+# "Unofficial tracker." label is added separately in the site template's visible markup —
+# this constant is the affiliation/trademark notice only.
 DISCLAIMER = (
-    "Unofficial tracker. Not affiliated with, authorized, or endorsed by Apple Inc. "
+    "Not affiliated with, authorized, or endorsed by Apple Inc. "
     '"Apple", "WWDC", and event names are trademarks of Apple Inc.'
 )
 

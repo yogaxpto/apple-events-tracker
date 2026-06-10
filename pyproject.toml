@@ -1,7 +1,7 @@
 [project]
 name = "apple-events-tracker"
 version = "0.1.0"
-description = "Unofficial, auto-updating tracker for Apple special events — publishes an .ics feed and a static site."
+description = "Auto-updating tracker for Apple special events — publishes an .ics feed and a static site."
 readme = "README.md"
 requires-python = ">=3.14"
 license = { text = "MIT" }
@@ -12,6 +12,7 @@ dependencies = [
     "lxml>=6.1.1,<7",
     "icalendar>=7.1.2,<8",
     "jinja2>=3.1,<4",
+    "pillow>=10.4,<12",
 ]
 
 [project.scripts]

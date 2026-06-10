@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 ## Overview
-**Apple Events Tracker** — an unofficial, auto-updating tracker for Apple special events, managed with [uv](https://docs.astral.sh/uv/) on Python 3.14+. A scheduled GitHub Action scrapes <https://www.apple.com/apple-events/>, keeps a structured last-known-good record in git, and publishes an iCalendar feed (`docs/feed.ics`) plus a static GitHub Pages site (`docs/index.html`). Full requirements live in [OBJECTIVE.md](OBJECTIVE.md); see [README.md](README.md) for usage. Key principle: git holds the canonical state — a failed/suspicious scrape never overwrites it.
+**Apple Events Tracker** — an auto-updating tracker for Apple special events, managed with [uv](https://docs.astral.sh/uv/) on Python 3.14+. A scheduled GitHub Action scrapes <https://www.apple.com/apple-events/>, keeps a structured last-known-good record in git, and publishes an iCalendar feed (`docs/feed.ics`) plus a static GitHub Pages site (`docs/index.html`). Full requirements live in [OBJECTIVE.md](OBJECTIVE.md); see [README.md](README.md) for usage. Key principle: git holds the canonical state — a failed/suspicious scrape never overwrites it.
 
 Run the pipeline locally with `uv run apple-events-tracker` (add `--from-file tests/fixtures/...` for an offline run, `--dry-run` to write nothing).
 
@@ -41,4 +41,4 @@ Direct `uv` usage:
 - **Never add co-authors to commits.** Do not include `Co-Authored-By:` trailers (or any other co-author attribution) in commit messages. Commits must have a single author.
 
 ## Dev environment
-Devcontainer "Python + uv" with VS Code extensions for Python, Pylance, ruff, mypy, and Jupyter. `make post-create` runs on container creation to bootstrap the environment.
+Devcontainer "Python + uv" with VS Code extensions for Python, Pylance, ruff, mypy, and Jupyter.
