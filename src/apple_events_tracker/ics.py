@@ -66,9 +66,10 @@ def _build_vevent(event: Event, config: RuntimeConfig, dtstamp: datetime) -> ICa
     vevent.add("URL", event.watch_url or event.source_url)
 
     if event.all_day:
-        start = event.start_date()
-        vevent.add("DTSTART", start)
-        vevent.add("DTEND", start + timedelta(days=1))
+        # DTEND is exclusive: a single day for a one-day event, the stored span for a
+        # multi-day one (keep the feed in step with the site's upcoming/past view).
+        vevent.add("DTSTART", event.start_date())
+        vevent.add("DTEND", event.end_date_exclusive())
     else:
         # Re-anchor to the named zone (e.g. America/Los_Angeles) so DTSTART/DTEND
         # emit ``TZID=America/Los_Angeles`` linking to the embedded VTIMEZONE,

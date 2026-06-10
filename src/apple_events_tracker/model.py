@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -71,6 +71,17 @@ class Event:
         if self.all_day or self.end is None:
             return None
         return datetime.fromisoformat(self.end)
+
+    def end_date_exclusive(self) -> date:
+        """Exclusive end date of an all-day event (the iCal ``DTEND`` convention).
+
+        Uses the stored ``end`` when present (a multi-day span), else the day after the
+        start — i.e. a single-day event. Lets a multi-day event count as current through
+        its final day instead of flipping to 'past' the morning after it begins.
+        """
+        if self.end is not None:
+            return date.fromisoformat(self.end)
+        return self.start_date() + timedelta(days=1)
 
     # -- fields that participate in change detection (FR-7) -------------------------
     def comparable_fields(self) -> dict[str, Any]:

@@ -117,3 +117,55 @@ def test_status_flips_to_past_when_event_has_happened() -> None:
     assert flipped.status == "past"
     assert flipped.sequence == 1
     assert [e.key for e in result.changed] == ["wwdc-2025-06-09"]
+
+
+def _status_at(event: Event, now: datetime) -> str:
+    """Classify a single carried-forward event at ``now`` and read back its status."""
+    return classify(EventStore(events=[event]), [], now).merged.by_key()[event.key].status
+
+
+def test_multiday_all_day_event_stays_upcoming_through_its_span() -> None:
+    # WWDC runs Mon-Fri: start Mon Jun 8, exclusive end Sat Jun 13 (the iCal DTEND).
+    wwdc = _ev("wwdc-2026-06-08", "WWDC26", "2026-06-08", status="upcoming")
+    wwdc.end = "2026-06-13"
+    # Mid-conference (Wed Jun 10) it is still on — must not drop to past on day two.
+    assert _status_at(wwdc, datetime(2026, 6, 10, 17, 0, tzinfo=UTC)) == "upcoming"
+    # On the last day (Fri Jun 12) it is still current.
+    assert _status_at(wwdc, datetime(2026, 6, 12, 23, 0, tzinfo=UTC)) == "upcoming"
+    # The morning after it ends (Sat Jun 13) it is finally past.
+    assert _status_at(wwdc, datetime(2026, 6, 13, 0, 0, tzinfo=UTC)) == "past"
+
+
+def test_single_day_all_day_classification_is_unchanged() -> None:
+    # No end → exclusive end is the next day, matching the old start-only behavior.
+    ev = _ev("special-event-2026-06-08", "Apple Event", "2026-06-08", status="upcoming")
+    assert _status_at(ev, datetime(2026, 6, 8, 23, 0, tzinfo=UTC)) == "upcoming"  # event day
+    assert _status_at(ev, datetime(2026, 6, 9, 0, 0, tzinfo=UTC)) == "past"  # day after
+
+
+def test_timed_event_in_progress_counts_as_upcoming() -> None:
+    # 10:00-12:00 PT keynote. At 11:00 PT it is live, not yet past.
+    ev = _ev(
+        "special-event-2026-09-09",
+        "Apple Event",
+        "2026-09-09T10:00:00-07:00",
+        all_day=False,
+        status="upcoming",
+    )
+    ev.end = "2026-09-09T12:00:00-07:00"
+    assert _status_at(ev, datetime(2026, 9, 9, 18, 0, tzinfo=UTC)) == "upcoming"  # 11:00 PT
+    assert _status_at(ev, datetime(2026, 9, 9, 19, 30, tzinfo=UTC)) == "past"  # 12:30 PT
+
+
+def test_timed_event_without_end_uses_default_duration() -> None:
+    # No end → upcoming for DEFAULT_EVENT_DURATION_MINUTES (120) past the start, so a
+    # just-started keynote isn't shown as over the instant it begins.
+    ev = _ev(
+        "special-event-2026-09-09",
+        "Apple Event",
+        "2026-09-09T10:00:00-07:00",
+        all_day=False,
+        status="upcoming",
+    )
+    assert _status_at(ev, datetime(2026, 9, 9, 18, 0, tzinfo=UTC)) == "upcoming"  # 11:00 PT
+    assert _status_at(ev, datetime(2026, 9, 9, 19, 30, tzinfo=UTC)) == "past"  # 12:30 PT

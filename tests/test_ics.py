@@ -114,6 +114,28 @@ def test_past_events_are_all_day_without_valarm() -> None:
         assert (ve.get("DTEND").dt - dtstart).days == 1
 
 
+def test_multiday_all_day_event_uses_stored_exclusive_end() -> None:
+    # A multi-day all-day event (e.g. a conference week) must render its full span,
+    # not collapse to a single day.
+    store = _store()
+    store.events.append(
+        Event(
+            key="wwdc-2027-06-07",
+            title="WWDC27",
+            kind="wwdc",
+            status="upcoming",
+            start="2027-06-07",
+            end="2027-06-12",  # exclusive DTEND → Mon-Fri span
+            all_day=True,
+            source_url="https://www.apple.com/apple-events/",
+        )
+    )
+    cal = Calendar.from_ical(build_calendar(store, _config()))
+    ve = _vevent_by_uid(cal, "wwdc-2027-06-07@acme.github.io")
+    assert ve.get("DTSTART").dt == date(2027, 6, 7)
+    assert ve.get("DTEND").dt == date(2027, 6, 12)
+
+
 def test_uid_fallback_and_passthrough() -> None:
     cal = Calendar.from_ical(build_calendar(_store(), _config()))
     uids = {str(ve.get("UID")) for ve in cal.walk("VEVENT")}

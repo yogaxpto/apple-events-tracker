@@ -10,7 +10,7 @@ upcoming → past even on a run that scrapes nothing new.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from . import config as cfg
 from .model import Event, EventStore
@@ -22,9 +22,20 @@ def iso_utc(now: datetime) -> str:
 
 
 def _recompute_status(event: Event, now: datetime) -> str:
+    """Classify against ``now`` by the moment the event *ends*, not when it starts, so an
+    in-progress event (a multi-day conference, or a keynote mid-stream) still counts as
+    'upcoming' instead of being shown as already over.
+
+    All-day events run through their exclusive end date (a single day when no end is
+    given); timed events run to their end, or a default duration when none is set — the
+    same fallback the ``.ics`` feed uses for ``DTEND`` — so the site and feed agree.
+    """
     if event.all_day:
-        return "upcoming" if event.start_date() >= now.date() else "past"
-    return "upcoming" if event.start_datetime() >= now else "past"
+        return "upcoming" if now.date() < event.end_date_exclusive() else "past"
+    end = event.end_datetime()
+    if end is None:
+        end = event.start_datetime() + timedelta(minutes=cfg.DEFAULT_EVENT_DURATION_MINUTES)
+    return "upcoming" if now < end else "past"
 
 
 @dataclass
