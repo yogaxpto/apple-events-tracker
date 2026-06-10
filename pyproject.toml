@@ -47,9 +47,14 @@ strict = true
 files = ["src", "tests"]
 mypy_path = "src"
 
+# icalendar 7.x ships a py.typed marker but leaves its public API (Event,
+# Calendar, .get(), ...) unannotated. Under strict mode that surfaces as
+# no-untyped-call noise at every call site, so we skip following its types and
+# treat the package as untyped (Any), as it was before 7.x.
 [[tool.mypy.overrides]]
 module = ["icalendar.*"]
 ignore_missing_imports = true
+follow_imports = "skip"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
