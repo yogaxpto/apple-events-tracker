@@ -209,9 +209,7 @@ def test_render_site_emits_event_json_ld(tmp_path: Path) -> None:
     """A schema.org @graph with an Event node for the next keynote (rich-result eligible)."""
     html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
 
-    match = re.search(
-        r'<script type="application/ld\+json">(.*?)</script>', html, re.S
-    )
+    match = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
     assert match is not None
     data = json.loads(match.group(1))
     assert data["@context"] == "https://schema.org"
@@ -228,9 +226,7 @@ def test_render_site_emits_event_json_ld(tmp_path: Path) -> None:
 def test_render_site_links_feed_for_autodiscovery(tmp_path: Path) -> None:
     config = RuntimeConfig()
     html = render_site(_full_store(), config, GENERATED_AT, out_dir=tmp_path)
-    assert (
-        f'<link rel="alternate" type="text/calendar" href="{config.site.feed_url}"' in html
-    )
+    assert f'<link rel="alternate" type="text/calendar" href="{config.site.feed_url}"' in html
 
 
 def test_render_site_writes_robots_and_sitemap(tmp_path: Path) -> None:
