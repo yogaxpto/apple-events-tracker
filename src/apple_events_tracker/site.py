@@ -80,16 +80,59 @@ def _event_view(event: Event) -> dict[str, Any]:
     }
 
 
-def _events_json(events: list[Event]) -> str:
-    """Serialize events for an inline ``<script type="application/json">`` island.
+def _safe_json(obj: Any) -> str:
+    """Serialize ``obj`` for an inline ``<script>`` island.
 
-    Element text is *not* HTML-entity-decoded, so we can't rely on Jinja
-    autoescaping (it would corrupt the JSON). Instead this is rendered with
-    ``| safe`` and the only sequences that could break out of the script element —
-    ``<``, ``>``, ``&`` — are neutralized to their JSON unicode escapes.
+    The payload is rendered with ``| safe`` (not Jinja-autoescaped, which would corrupt
+    JSON), so the only sequences that could break out of the script element — ``<``,
+    ``>``, ``&`` — are neutralized to their JSON unicode escapes.
     """
-    raw = json.dumps([_event_view(e) for e in events], ensure_ascii=False, separators=(",", ":"))
+    raw = json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
     return raw.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+
+def _events_json(events: list[Event]) -> str:
+    """Serialize events for the inline ``<script type="application/json">`` archive island."""
+    return _safe_json([_event_view(e) for e in events])
+
+
+def _structured_data(store: EventStore, page_url: str, og_image_url: str) -> str:
+    """JSON-LD (schema.org) for the page: a WebSite plus an Event for the next keynote.
+
+    The Event node makes the upcoming keynote eligible for Google's event rich results.
+    Rendered into a ``<script type="application/ld+json">`` via :func:`_safe_json`.
+    """
+    graph: list[dict[str, Any]] = [
+        {
+            "@type": "WebSite",
+            "name": "Apple Events Tracker",
+            "url": page_url,
+            "description": _og_copy(store)["og_description"],
+        }
+    ]
+    upcoming = store.upcoming()
+    if upcoming:
+        event = upcoming[0]
+        node: dict[str, Any] = {
+            "@type": "Event",
+            "name": event.title,
+            "startDate": event.start,
+            "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+            "eventStatus": "https://schema.org/EventScheduled",
+            "location": {
+                "@type": "VirtualLocation",
+                "url": event.watch_url or config_module.SOURCE_URL,
+            },
+            "url": page_url,
+            "image": og_image_url,
+            "organizer": {"@type": "Organization", "name": "Apple", "url": "https://www.apple.com"},
+        }
+        if event.end:
+            node["endDate"] = event.end
+        if event.description:
+            node["description"] = event.description
+        graph.append(node)
+    return _safe_json({"@context": "https://schema.org", "@graph": graph})
 
 
 def _format_event_date(event: Event) -> str:
@@ -163,9 +206,14 @@ def _build_context(
         "source_url": config_module.SOURCE_URL,
         "disclaimer": config_module.DISCLAIMER,
         "page_url": f"{base_url}/",
+        "base_url": base_url,
         "og_title": og_copy["og_title"],
         "og_description": og_copy["og_description"],
         "og_image_url": f"{base_url}/assets/og.png?v={cache_key}",
+        "structured_data_json": _structured_data(
+            store, f"{base_url}/", f"{base_url}/assets/og.png?v={cache_key}"
+        ),
+        "sitemap_lastmod": generated_at,
     }
 
 
@@ -189,12 +237,17 @@ def render_site(
     )
     env.filters["event_date"] = _format_event_date
 
-    template = env.get_template("index.html.j2")
-    html = template.render(**_build_context(store, config, generated_at))
+    context = _build_context(store, config, generated_at)
+    html = env.get_template("index.html.j2").render(**context)
 
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(html, encoding="utf-8")
+
+    # Crawler files share the page context (absolute base URL + last-modified stamp).
+    for name in ("robots.txt", "sitemap.xml"):
+        rendered = env.get_template(f"{name}.j2").render(**context)
+        (out / name).write_text(rendered, encoding="utf-8")
 
     # Social link-preview card (FB / iMessage / Twitter) referenced by the og:image tag.
     og_copy = _og_copy(store)

@@ -203,3 +203,50 @@ def test_render_site_links_and_copies_web_manifest(tmp_path: Path) -> None:
     for icon in manifest["icons"]:
         if icon["src"].endswith(".png"):
             assert (tmp_path / icon["src"]).exists(), icon["src"]
+
+
+def test_render_site_emits_event_json_ld(tmp_path: Path) -> None:
+    """A schema.org @graph with an Event node for the next keynote (rich-result eligible)."""
+    html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+
+    match = re.search(
+        r'<script type="application/ld\+json">(.*?)</script>', html, re.S
+    )
+    assert match is not None
+    data = json.loads(match.group(1))
+    assert data["@context"] == "https://schema.org"
+    types = {node["@type"] for node in data["@graph"]}
+    assert {"WebSite", "Event"} <= types
+
+    event = next(n for n in data["@graph"] if n["@type"] == "Event")
+    assert event["name"] == "WWDC26"
+    assert event["startDate"] == "2026-06-08T10:00:00-07:00"
+    assert event["endDate"] == "2026-06-08T12:00:00-07:00"
+    assert event["location"]["@type"] == "VirtualLocation"
+
+
+def test_render_site_links_feed_for_autodiscovery(tmp_path: Path) -> None:
+    config = RuntimeConfig()
+    html = render_site(_full_store(), config, GENERATED_AT, out_dir=tmp_path)
+    assert (
+        f'<link rel="alternate" type="text/calendar" href="{config.site.feed_url}"' in html
+    )
+
+
+def test_render_site_writes_robots_and_sitemap(tmp_path: Path) -> None:
+    import xml.etree.ElementTree as ET
+
+    config = RuntimeConfig()
+    render_site(_full_store(), config, GENERATED_AT, out_dir=tmp_path)
+
+    robots = (tmp_path / "robots.txt").read_text(encoding="utf-8")
+    assert "User-agent: *" in robots
+    assert f"Sitemap: {config.site.pages_base_url}/sitemap.xml" in robots
+
+    sitemap = tmp_path / "sitemap.xml"
+    root = ET.fromstring(sitemap.read_text(encoding="utf-8"))  # valid XML
+    ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+    locs = [el.text for el in root.iter(f"{ns}loc")]
+    assert locs == [f"{config.site.pages_base_url}/"]
+    lastmod = root.find(f"{ns}url/{ns}lastmod")
+    assert lastmod is not None and lastmod.text == GENERATED_AT

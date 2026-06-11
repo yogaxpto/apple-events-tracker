@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yogaxpto.github.io/apple-events-tracker/sitemap.xml
