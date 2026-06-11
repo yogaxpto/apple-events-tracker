@@ -26,7 +26,22 @@ from .model import Event, EventStore
 # Locate project resources relative to this file, never hardcoding /workspace.
 _PACKAGE_ROOT = Path(__file__).parent.parent.parent
 _TEMPLATES_DIR = _PACKAGE_ROOT / "templates"
-_DEFAULT_STYLE_SRC = _PACKAGE_ROOT / "docs" / "assets" / "style.css"
+_DOCS_ROOT = _PACKAGE_ROOT / "docs"
+_DEFAULT_STYLE_SRC = _DOCS_ROOT / "assets" / "style.css"
+
+# Static, event-independent assets whose canonical copy lives in ``docs/`` (generated
+# once — stylesheet by hand, icons via :mod:`icons`). Paths are relative to the site
+# root; render_site copies any that are missing when rendering to a non-``docs`` dir
+# (preview / tests), so the favicon and icons resolve there too.
+_STATIC_ASSETS = (
+    "assets/style.css",
+    "favicon.svg",
+    "favicon.ico",
+    "apple-touch-icon.png",
+    "assets/icon-192.png",
+    "assets/icon-512.png",
+    ".nojekyll",
+)
 
 _MONTHS = (
     "January",
@@ -184,10 +199,20 @@ def render_site(
     og_copy = _og_copy(store)
     og.render_og_image(out, title=og_copy["card_title"], subtitle=og_copy["card_subtitle"])
 
-    assets = out / "assets"
-    assets.mkdir(parents=True, exist_ok=True)
-    style_dst = assets / "style.css"
-    if not style_dst.exists() and _DEFAULT_STYLE_SRC.exists() and style_dst != _DEFAULT_STYLE_SRC:
-        shutil.copyfile(_DEFAULT_STYLE_SRC, style_dst)
+    _copy_static_assets(out)
 
     return html
+
+
+def _copy_static_assets(out: Path) -> None:
+    """Copy any missing static assets (stylesheet, icons) from ``docs/`` into ``out``.
+
+    A no-op when rendering to the canonical ``docs/`` itself (source == destination),
+    where these files are committed; only non-``docs`` targets (preview, tests) need them.
+    """
+    for rel in _STATIC_ASSETS:
+        src = _DOCS_ROOT / rel
+        dst = out / rel
+        if src.exists() and not dst.exists() and src.resolve() != dst.resolve():
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dst)

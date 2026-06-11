@@ -173,3 +173,15 @@ def test_render_site_social_tags_fallback_without_upcoming(tmp_path: Path) -> No
 
     assert 'property="og:title" content="Apple Events Tracker"' in html
     assert (tmp_path / "assets" / "og.png").exists()
+
+
+def test_render_site_declares_and_copies_favicons(tmp_path: Path) -> None:
+    """Icon <link>s are declared (relative, so they resolve under a /repo/ subpath) and
+    the static icon files are copied alongside the page."""
+    html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+
+    assert '<link rel="icon" href="favicon.svg" type="image/svg+xml" />' in html
+    assert '<link rel="apple-touch-icon" href="apple-touch-icon.png" />' in html
+
+    for name in ("favicon.svg", "favicon.ico", "apple-touch-icon.png"):
+        assert (tmp_path / name).exists(), name
