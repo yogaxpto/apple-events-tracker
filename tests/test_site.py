@@ -250,3 +250,22 @@ def test_render_site_writes_robots_and_sitemap(tmp_path: Path) -> None:
     assert locs == [f"{config.site.pages_base_url}/"]
     lastmod = root.find(f"{ns}url/{ns}lastmod")
     assert lastmod is not None and lastmod.text == GENERATED_AT
+
+
+def test_render_site_writes_404_with_absolute_assets(tmp_path: Path) -> None:
+    """The 404 page uses absolute asset/home URLs (it's served at arbitrary depths) and
+    is marked noindex."""
+    config = RuntimeConfig()
+    render_site(_full_store(), config, GENERATED_AT, out_dir=tmp_path)
+
+    page = (tmp_path / "404.html").read_text(encoding="utf-8")
+    base = config.site.pages_base_url
+    assert '<meta name="robots" content="noindex" />' in page
+    assert f'href="{base}/assets/style.css"' in page
+    assert f'href="{base}/"' in page
+
+
+def test_render_site_emits_generator_and_copies_nojekyll(tmp_path: Path) -> None:
+    html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+    assert '<meta name="generator" content="apple-events-tracker" />' in html
+    assert (tmp_path / ".nojekyll").exists()

@@ -244,8 +244,8 @@ def render_site(
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(html, encoding="utf-8")
 
-    # Crawler files share the page context (absolute base URL + last-modified stamp).
-    for name in ("robots.txt", "sitemap.xml"):
+    # Sibling pages/crawler files share the page context (absolute base URL, stamps).
+    for name in ("robots.txt", "sitemap.xml", "404.html"):
         rendered = env.get_template(f"{name}.j2").render(**context)
         (out / name).write_text(rendered, encoding="utf-8")
 
