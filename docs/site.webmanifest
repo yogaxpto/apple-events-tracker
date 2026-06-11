@@ -1,0 +1,15 @@
+{
+  "name": "Apple Events Tracker",
+  "short_name": "Apple Events",
+  "description": "Auto-updating tracker for Apple special events. Subscribe once to a calendar feed and never miss a keynote.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#05060a",
+  "theme_color": "#05060a",
+  "icons": [
+    { "src": "favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "assets/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+    { "src": "assets/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+  ]
+}

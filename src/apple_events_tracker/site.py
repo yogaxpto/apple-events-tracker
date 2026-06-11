@@ -40,6 +40,7 @@ _STATIC_ASSETS = (
     "apple-touch-icon.png",
     "assets/icon-192.png",
     "assets/icon-512.png",
+    "site.webmanifest",
     ".nojekyll",
 )
 

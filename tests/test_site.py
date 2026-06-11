@@ -185,3 +185,21 @@ def test_render_site_declares_and_copies_favicons(tmp_path: Path) -> None:
 
     for name in ("favicon.svg", "favicon.ico", "apple-touch-icon.png"):
         assert (tmp_path / name).exists(), name
+
+
+def test_render_site_links_and_copies_web_manifest(tmp_path: Path) -> None:
+    """The PWA manifest is linked and copied, with relative icon/start paths so install
+    works from the /repo/ subpath."""
+    html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+
+    assert '<link rel="manifest" href="site.webmanifest" />' in html
+
+    manifest_path = tmp_path / "site.webmanifest"
+    assert manifest_path.exists()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["start_url"] == "." and manifest["scope"] == "."
+    icon_srcs = {icon["src"] for icon in manifest["icons"]}
+    assert {"assets/icon-192.png", "assets/icon-512.png"} <= icon_srcs
+    for icon in manifest["icons"]:
+        if icon["src"].endswith(".png"):
+            assert (tmp_path / icon["src"]).exists(), icon["src"]
