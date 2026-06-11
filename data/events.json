@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-10T21:19:35Z",
+  "generated_at": "2026-06-11T19:32:12Z",
   "events": [
     {
       "key": "wwdc-2026-06-08",
@@ -29,12 +29,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "Awe dropping. Watch the keynote introducing the latest iPhone.",
+      "description": "Get to know the next generation of iPhone — iPhone 17 Pro, iPhone 17, and iPhone Air. Explore AirPods Pro 3 featuring the world’s best in-ear Active Noise Cancellation. And discover the latest Apple Watch family.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 1,
+      "sequence": 2,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-10T21:19:35Z"
+      "last_changed": "2026-06-11T19:32:12Z"
     },
     {
       "key": "wwdc-2025-06-09",
@@ -46,12 +46,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "A first look at the latest software updates across Apple platforms.",
+      "description": "Introducing our broadest design update ever, a more helpful Apple Intelligence, and exciting new features across all our platforms.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 1,
+      "sequence": 2,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-10T21:19:35Z"
+      "last_changed": "2026-06-11T19:32:12Z"
     },
     {
       "key": "special-event-2025-05-07",
@@ -88,6 +88,23 @@
       "last_changed": "2026-06-10T21:19:35Z"
     },
     {
+      "key": "special-event-2024-09-09",
+      "uid": "",
+      "title": "Apple Event",
+      "kind": "special-event",
+      "status": "past",
+      "start": "2024-09-09",
+      "end": null,
+      "tzid": null,
+      "all_day": true,
+      "description": "Introducing iPhone 16 Pro and iPhone 16 with Apple Intelligence, Apple Watch Series 10, and AirPods 4. New colors for Apple Watch Ultra 2 and AirPods Max. AirPods Pro 2 with hearing health features.",
+      "source_url": "https://www.apple.com/apple-events/",
+      "watch_url": null,
+      "sequence": 0,
+      "first_seen": "2026-06-11T19:32:12Z",
+      "last_changed": "2026-06-11T19:32:12Z"
+    },
+    {
       "key": "wwdc-2024-06-10",
       "uid": "",
       "title": "WWDC 2024",
@@ -97,12 +114,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "Apple Intelligence unveiled alongside iOS 18, iPadOS 18, macOS Sequoia, watchOS 11 and visionOS 2.",
+      "description": "Introducing Apple Intelligence, AI for the rest of us. And exciting updates coming with iOS 18, iPadOS 18, macOS Sequoia, watchOS 11, and visionOS 2.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 0,
-      "first_seen": null,
-      "last_changed": null
+      "sequence": 1,
+      "first_seen": "2026-06-11T19:32:12Z",
+      "last_changed": "2026-06-11T19:32:12Z"
     },
     {
       "key": "special-event-2024-05-07",
@@ -114,12 +131,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "New iPad Pro with M4, redesigned iPad Air, Apple Pencil Pro and Magic Keyboard introduced.",
+      "description": "Introducing the unbelievably thin and portable iPad Pro with Apple M4 chip, the redesigned iPad Air in two sizes, and the all‑new Apple Pencil Pro.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 0,
-      "first_seen": null,
-      "last_changed": null
+      "sequence": 1,
+      "first_seen": "2026-06-11T19:32:12Z",
+      "last_changed": "2026-06-11T19:32:12Z"
     },
     {
       "key": "special-event-2023-10-30",
@@ -131,12 +148,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "M3, M3 Pro and M3 Max chips with new 24-inch iMac and 14- and 16-inch MacBook Pro introduced.",
+      "description": "Introducing the new MacBook Pro 14” and 16” and the new iMac. Now supercharged by the M3 family of chips.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 0,
-      "first_seen": null,
-      "last_changed": null
+      "sequence": 1,
+      "first_seen": "2026-06-11T19:32:12Z",
+      "last_changed": "2026-06-11T19:32:12Z"
     },
     {
       "key": "special-event-2023-09-12",
