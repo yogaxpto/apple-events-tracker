@@ -83,6 +83,13 @@ jobs:
     # AUTO-4: deploy only when something changed (or on a manual run) — no noisy rebuilds.
     if: needs.update.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    # Share the Pages concurrency group with pages.yml so this scheduled deploy and a
+    # human-push deploy never hit the github-pages environment at the same time (the
+    # Pages API rejects concurrent deployments with a 400). Job-level so it doesn't
+    # disturb the workflow-level update-apple-events group guarding the scrape/commit.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

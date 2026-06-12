@@ -17,9 +17,12 @@ permissions:
   pages: write
   id-token: write
 
-# Never let two Pages deploys race; let an in-flight one finish.
+# Never let two Pages deploys race; let an in-flight one finish. This group is shared
+# with update.yml's deploy job so a scheduled bot deploy and a human-push deploy queue
+# behind each other instead of both hitting the github-pages environment at once (the
+# Pages API rejects concurrent deployments with a 400).
 concurrency:
-  group: pages-deploy
+  group: pages
   cancel-in-progress: false
 
 jobs:
