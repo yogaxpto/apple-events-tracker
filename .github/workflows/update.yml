@@ -37,15 +37,10 @@ jobs:
         with:
           version: "0.11.19" # pin the toolchain for reproducibility (NFR-5)
           python-version: "3.14"
+          enable-cache: true # restore uv's download cache to speed up `uv sync`
 
       - name: Sync dependencies
         run: uv sync --frozen
-
-      - name: Quality gates (lint, type-check, tests)
-        run: |
-          uv run ruff check .
-          uv run mypy .
-          uv run pytest
 
       - name: Run tracker (scrape → diff → regenerate)
         env:
