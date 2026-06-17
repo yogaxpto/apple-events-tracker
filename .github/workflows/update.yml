@@ -39,14 +39,17 @@ jobs:
           python-version: "3.14"
           enable-cache: true # restore uv's download cache to speed up `uv sync`
 
-      - name: Sync dependencies
-        run: uv sync --frozen
+      # The cron only runs the tracker (runtime deps); ci.yml gates lint/type/test.
+      # --no-dev skips installing the dev group (pytest/ruff/mypy) on every run.
+      - name: Sync dependencies (runtime only)
+        run: uv sync --frozen --no-dev
 
       - name: Run tracker (scrape → diff → regenerate)
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: uv run apple-events-tracker --verbose
+        # --no-dev so uv run's implicit sync doesn't re-add the dev group we skipped.
+        run: uv run --no-dev apple-events-tracker --verbose
 
       - name: Commit changes (last-known-good in git)
         id: commit
