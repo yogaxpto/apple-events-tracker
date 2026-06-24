@@ -30,7 +30,7 @@ jobs:
     steps:
       # AUTO-6: third-party actions pinned to release version tags.
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install uv + Python
         uses: astral-sh/setup-uv@v7
