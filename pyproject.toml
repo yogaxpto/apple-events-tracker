@@ -21,8 +21,8 @@ apple-events-tracker-preview = "apple_events_tracker.preview:main"
 
 [dependency-groups]
 dev = [
-    "pytest>=9.1.0,<10",
-    "ruff>=0.15.17,<1",
+    "pytest>=9.1.1,<10",
+    "ruff>=0.15.19,<1",
     "mypy>=2.1.0,<3",
     "types-beautifulsoup4>=4.12",
 ]
