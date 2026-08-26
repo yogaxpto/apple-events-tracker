@@ -3,8 +3,8 @@ VERSION:2.0
 PRODID:-//Apple Events Tracker//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALDESC:Not affiliated with\, authorized\, or endorsed by Apple Inc. 
- "Apple"\, "WWDC"\, and event names are trademarks of Apple Inc.
+X-WR-CALDESC:Not affiliated with, authorized, or endorsed by Apple Inc. "A
+ pple", "WWDC", and event names are trademarks of Apple Inc.
 X-WR-CALNAME:Apple Events
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
@@ -65,33 +65,34 @@ BEGIN:VEVENT
 SUMMARY:WWDC26
 DTSTART;VALUE=DATE:20260608
 DTEND;VALUE=DATE:20260609
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2026-06-08@yogaxpto.github.io
-SEQUENCE:1
-DESCRIPTION:Upcoming Apple event.\nWatch: https://www.apple.com/apple-even
- ts/event-stream/\n\nNot affiliated with\, authorized\, or endorsed by Appl
- e Inc. "Apple"\, "WWDC"\, and event names are trademarks of Apple Inc.
-URL:https://www.apple.com/apple-events/event-stream/
+SEQUENCE:2
+DESCRIPTION:Introducing new Siri AI powered by Apple Intelligence\, expan
+ ded Child Safety features\, plus more helpful and exciting updates across 
+ all our platforms.\n\nNot affiliated with\, authorized\, or endorsed by Ap
+ ple Inc. "Apple"\, "WWDC"\, and event names are trademarks of Apple Inc.
+URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Apple Event
 DTSTART;VALUE=DATE:20250909
 DTEND;VALUE=DATE:20250910
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2025-09-09@yogaxpto.github.io
 SEQUENCE:2
-DESCRIPTION:Get to know the next generation of iPhone — iPhone 17 Pro\
- , iPhone 17\, and iPhone Air. Explore AirPods Pro 3 featuring the worl
- d’s best in-ear Active Noise Cancellation. And discover the latest Apple
-  Watch family.\n\nNot affiliated with\, authorized\, or endorsed by Apple
-  Inc. "Apple"\, "WWDC"\, and event names are trademarks of Apple Inc.
+DESCRIPTION:Get to know the next generation of iPhone — iPhone 17 Pro
+ \, iPhone 17\, and iPhone Air. Explore AirPods Pro 3 featuring the wor
+ ld’s best in-ear Active Noise Cancellation. And discover the latest Appl
+ e Watch family.\n\nNot affiliated with\, authorized\, or endorsed by Appl
+ e Inc. "Apple"\, "WWDC"\, and event names are trademarks of Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:WWDC25
 DTSTART;VALUE=DATE:20250609
 DTEND;VALUE=DATE:20250610
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2025-06-09@yogaxpto.github.io
 SEQUENCE:2
 DESCRIPTION:Introducing our broadest design update ever\, a more helpful A
@@ -104,19 +105,19 @@ BEGIN:VEVENT
 SUMMARY:Apple Event
 DTSTART;VALUE=DATE:20250507
 DTEND;VALUE=DATE:20250508
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2025-05-07@yogaxpto.github.io
 SEQUENCE:1
-DESCRIPTION:Let loose. The latest iPad\, unveiled.\n\nNot affiliated with\
- , authorized\, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event name
- s are trademarks of Apple Inc.
+DESCRIPTION:Let loose. The latest iPad\, unveiled.\n\nNot affiliated with
+ \, authorized\, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event nam
+ es are trademarks of Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Apple Special Event
 DTSTART;VALUE=DATE:20241028
 DTEND;VALUE=DATE:20241029
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2024-10-28@yogaxpto.github.io
 SEQUENCE:1
 DESCRIPTION:Mac comes alive with new chips.\n\nNot affiliated with\, autho
@@ -128,7 +129,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event
 DTSTART;VALUE=DATE:20240909
 DTEND;VALUE=DATE:20240910
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2024-09-09@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Introducing iPhone 16 Pro and iPhone 16 with Apple Intelli
@@ -142,7 +143,7 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2024
 DTSTART;VALUE=DATE:20240610
 DTEND;VALUE=DATE:20240611
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2024-06-10@yogaxpto.github.io
 SEQUENCE:1
 DESCRIPTION:Introducing Apple Intelligence\, AI for the rest of us. And
@@ -156,7 +157,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Let Loose'
 DTSTART;VALUE=DATE:20240507
 DTEND;VALUE=DATE:20240508
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2024-05-07@yogaxpto.github.io
 SEQUENCE:1
 DESCRIPTION:Introducing the unbelievably thin and portable iPad Pro with 
@@ -170,20 +171,20 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Scary Fast'
 DTSTART;VALUE=DATE:20231030
 DTEND;VALUE=DATE:20231031
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2023-10-30@yogaxpto.github.io
-SEQUENCE:1
-DESCRIPTION:Introducing the new MacBook Pro 14” and 16” and the new i
- Mac. Now supercharged by the M3 family of chips.\n\nNot affiliated with\, 
- authorized\, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event names 
- are trademarks of Apple Inc.
+SEQUENCE:2
+DESCRIPTION:M3\, M3 Pro and M3 Max chips with new 24-inch iMac and 14- and
+  16-inch MacBook Pro introduced.\n\nNot affiliated with\, authorized\, or 
+ endorsed by Apple Inc. "Apple"\, "WWDC"\, and event names are trademarks o
+ f Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Apple Event — 'Wonderlust'
 DTSTART;VALUE=DATE:20230912
 DTEND;VALUE=DATE:20230913
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2023-09-12@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 15 and iPhone 15 Pro lineup and Apple Watch Series 9 an
@@ -196,20 +197,20 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2023
 DTSTART;VALUE=DATE:20230605
 DTEND;VALUE=DATE:20230606
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2023-06-05@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Apple Vision Pro and visionOS revealed alongside iOS 17\, macO
- S Sonoma and the 15-inch MacBook Air.\n\nNot affiliated with\, authorized\
- , or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event names are tradema
- rks of Apple Inc.
+ S Sonoma and the 15-inch MacBook Air.\n\nNot affiliated with\, authorized
+ \, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event names are tradem
+ arks of Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Apple Event — 'Far Out'
 DTSTART;VALUE=DATE:20220907
 DTEND;VALUE=DATE:20220908
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2022-09-07@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 14 lineup\, Apple Watch Series 8\, Watch Ultra\, SE and
@@ -222,7 +223,7 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2022
 DTSTART;VALUE=DATE:20220606
 DTEND;VALUE=DATE:20220607
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2022-06-06@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:M2 chip\, redesigned MacBook Air\, iOS 16\, macOS Ventura and 
@@ -235,7 +236,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Peek Performance'
 DTSTART;VALUE=DATE:20220308
 DTEND;VALUE=DATE:20220309
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2022-03-08@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Mac Studio with M1 Ultra\, Studio Display\, iPhone SE (3rd gen
@@ -248,7 +249,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Unleashed'
 DTSTART;VALUE=DATE:20211018
 DTEND;VALUE=DATE:20211019
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2021-10-18@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:M1 Pro and M1 Max chips with redesigned 14- and 16-inch MacBoo
@@ -261,7 +262,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'California Streaming'
 DTSTART;VALUE=DATE:20210914
 DTEND;VALUE=DATE:20210915
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2021-09-14@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 13 lineup\, Apple Watch Series 7\, iPad (9th gen) and i
@@ -274,7 +275,7 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2021
 DTSTART;VALUE=DATE:20210607
 DTEND;VALUE=DATE:20210608
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2021-06-07@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iOS 15\, iPadOS 15\, macOS Monterey\, watchOS 8 and new privac
@@ -287,7 +288,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Spring Loaded'
 DTSTART;VALUE=DATE:20210420
 DTEND;VALUE=DATE:20210421
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2021-04-20@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:AirTag\, redesigned M1 iMac\, M1 iPad Pro\, Apple TV 4K (2nd g
@@ -300,7 +301,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'One More Thing'
 DTSTART;VALUE=DATE:20201110
 DTEND;VALUE=DATE:20201111
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2020-11-10@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:First Apple silicon M1 Macs: MacBook Air\, 13-inch MacBook Pro
@@ -313,7 +314,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Hi\, Speed'
 DTSTART;VALUE=DATE:20201013
 DTEND;VALUE=DATE:20201014
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2020-10-13@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 12 lineup with 5G\, iPhone 12 mini and HomePod mini int
@@ -325,20 +326,20 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Time Flies'
 DTSTART;VALUE=DATE:20200915
 DTEND;VALUE=DATE:20200916
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2020-09-15@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Apple Watch Series 6 and SE\, iPad (8th gen)\, iPad Air (4th g
- en) and Apple One bundles introduced.\n\nNot affiliated with\, authorized\
- , or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event names are tradema
- rks of Apple Inc.
+ en) and Apple One bundles introduced.\n\nNot affiliated with\, authorized
+ \, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event names are tradem
+ arks of Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:WWDC 2020
 DTSTART;VALUE=DATE:20200622
 DTEND;VALUE=DATE:20200623
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2020-06-22@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Apple silicon transition for the Mac announced alongside iOS 1
@@ -351,20 +352,20 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'By Innovation Only'
 DTSTART;VALUE=DATE:20190910
 DTEND;VALUE=DATE:20190911
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2019-09-10@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 11 and iPhone 11 Pro\, Apple Watch Series 5\, iPad (7th
-  gen) and Apple Arcade and TV+ pricing introduced.\n\nNot affiliated with\
- , authorized\, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event name
- s are trademarks of Apple Inc.
+  gen) and Apple Arcade and TV+ pricing introduced.\n\nNot affiliated with
+ \, authorized\, or endorsed by Apple Inc. "Apple"\, "WWDC"\, and event nam
+ es are trademarks of Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:WWDC 2019
 DTSTART;VALUE=DATE:20190603
 DTEND;VALUE=DATE:20190604
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2019-06-03@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Mac Pro and Pro Display XDR\, iPadOS\, iOS 13\, macOS Catalina
@@ -377,7 +378,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'It's Show Time'
 DTSTART;VALUE=DATE:20190325
 DTEND;VALUE=DATE:20190326
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2019-03-25@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Apple TV+\, Apple News+\, Apple Arcade and Apple Card services
@@ -389,7 +390,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'There's More in the Making'
 DTSTART;VALUE=DATE:20181030
 DTEND;VALUE=DATE:20181031
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2018-10-30@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Redesigned iPad Pro with Face ID\, new MacBook Air and Mac min
@@ -401,7 +402,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Gather Round'
 DTSTART;VALUE=DATE:20180912
 DTEND;VALUE=DATE:20180913
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2018-09-12@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone XS\, iPhone XS Max\, iPhone XR and Apple Watch Series 4
@@ -413,7 +414,7 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2018
 DTSTART;VALUE=DATE:20180604
 DTEND;VALUE=DATE:20180605
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2018-06-04@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iOS 12\, macOS Mojave\, watchOS 5 and tvOS 12 introduced with 
@@ -426,7 +427,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — September 2017
 DTSTART;VALUE=DATE:20170912
 DTEND;VALUE=DATE:20170913
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2017-09-12@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone X\, iPhone 8 and 8 Plus\, Apple Watch Series 3 and Appl
@@ -439,7 +440,7 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2017
 DTSTART;VALUE=DATE:20170605
 DTEND;VALUE=DATE:20170606
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2017-06-05@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:HomePod\, iMac Pro\, 10.5-inch iPad Pro\, iOS 11 and macOS Hig
@@ -451,7 +452,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Hello Again'
 DTSTART;VALUE=DATE:20161027
 DTEND;VALUE=DATE:20161028
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2016-10-27@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:MacBook Pro with the Touch Bar introduced.\n\nNot affiliated w
@@ -463,7 +464,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — September 2016
 DTSTART;VALUE=DATE:20160907
 DTEND;VALUE=DATE:20160908
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2016-09-07@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 7 and iPhone 7 Plus\, Apple Watch Series 2 and AirPods 
@@ -475,7 +476,7 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2016
 DTSTART;VALUE=DATE:20160613
 DTEND;VALUE=DATE:20160614
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2016-06-13@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iOS 10\, macOS Sierra\, watchOS 3 and tvOS 10 introduced\; OS 
@@ -487,7 +488,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Let Us Loop You In'
 DTSTART;VALUE=DATE:20160321
 DTEND;VALUE=DATE:20160322
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2016-03-21@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone SE (1st gen) and 9.7-inch iPad Pro introduced.\n\nNot a
@@ -499,7 +500,7 @@ BEGIN:VEVENT
 SUMMARY:Apple Event — 'Hey Siri'
 DTSTART;VALUE=DATE:20150909
 DTEND;VALUE=DATE:20150910
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2015-09-09@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:iPhone 6s and 6s Plus\, iPad Pro\, Apple Pencil and fourth-gen
@@ -512,19 +513,19 @@ BEGIN:VEVENT
 SUMMARY:WWDC 2015
 DTSTART;VALUE=DATE:20150608
 DTEND;VALUE=DATE:20150609
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:wwdc-2015-06-08@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Apple Music\, iOS 9\, OS X El Capitan and watchOS 2 introduced
- .\n\nNot affiliated with\, authorized\, or endorsed by Apple Inc. "Apple"\
- , "WWDC"\, and event names are trademarks of Apple Inc.
+ .\n\nNot affiliated with\, authorized\, or endorsed by Apple Inc. "Apple"
+ \, "WWDC"\, and event names are trademarks of Apple Inc.
 URL:https://www.apple.com/apple-events/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Apple Event — 'Spring Forward'
 DTSTART;VALUE=DATE:20150309
 DTEND;VALUE=DATE:20150310
-DTSTAMP:20260611T193212Z
+DTSTAMP:20260826T185358Z
 UID:special-event-2015-03-09@yogaxpto.github.io
 SEQUENCE:0
 DESCRIPTION:Apple Watch pricing and availability detailed and the 12-inch 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-11T19:32:12Z",
+  "generated_at": "2026-08-26T18:53:58Z",
   "events": [
     {
       "key": "wwdc-2026-06-08",
@@ -12,12 +12,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "Upcoming Apple event.",
+      "description": "Introducing new Siri AI powered by Apple Intelligence, expanded Child Safety features, plus more helpful and exciting updates across all our platforms.",
       "source_url": "https://www.apple.com/apple-events/",
-      "watch_url": "https://www.apple.com/apple-events/event-stream/",
-      "sequence": 1,
+      "watch_url": null,
+      "sequence": 2,
       "first_seen": "2026-06-08T17:00:00Z",
-      "last_changed": "2026-06-10T17:00:00Z"
+      "last_changed": "2026-08-26T18:53:58Z"
     },
     {
       "key": "special-event-2025-09-09",
@@ -148,12 +148,12 @@
       "end": null,
       "tzid": null,
       "all_day": true,
-      "description": "Introducing the new MacBook Pro 14” and 16” and the new iMac. Now supercharged by the M3 family of chips.",
+      "description": "M3, M3 Pro and M3 Max chips with new 24-inch iMac and 14- and 16-inch MacBook Pro introduced.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 1,
+      "sequence": 2,
       "first_seen": "2026-06-11T19:32:12Z",
-      "last_changed": "2026-06-11T19:32:12Z"
+      "last_changed": "2026-08-26T18:53:58Z"
     },
     {
       "key": "special-event-2023-09-12",
