@@ -11,7 +11,7 @@ from markupsafe import escape
 from apple_events_tracker import config as config_module
 from apple_events_tracker.config import RuntimeConfig
 from apple_events_tracker.model import Event, EventStore
-from apple_events_tracker.site import render_site
+from apple_events_tracker.site import output_is_stale, render_site
 
 GENERATED_AT = "2026-06-08T08:00:00Z"
 
@@ -263,5 +263,29 @@ def test_render_site_writes_404_with_absolute_assets(tmp_path: Path) -> None:
 
 def test_render_site_emits_generator_and_copies_nojekyll(tmp_path: Path) -> None:
     html = render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
-    assert '<meta name="generator" content="apple-events-tracker" />' in html
+    assert re.search(r'<meta name="generator" content="apple-events-tracker [0-9a-f]{12}" />', html)
     assert (tmp_path / ".nojekyll").exists()
+
+
+def test_rendered_output_is_not_stale(tmp_path: Path) -> None:
+    # Given a page rendered by the current templates and renderer
+    render_site(_full_store(), RuntimeConfig(), GENERATED_AT, out_dir=tmp_path)
+    # When the stamped fingerprint is checked against the current one
+    # Then the output is up to date
+    assert not output_is_stale(tmp_path / "index.html")
+
+
+def test_output_without_fingerprint_stamp_is_stale(tmp_path: Path) -> None:
+    # Given a page from before fingerprint stamping (plain generator tag)
+    index = tmp_path / "index.html"
+    index.write_text('<meta name="generator" content="apple-events-tracker" />')
+    # When checked / Then it counts as stale so it gets republished once and stamped
+    assert output_is_stale(index)
+
+
+def test_output_with_different_fingerprint_is_stale(tmp_path: Path) -> None:
+    # Given a page stamped by an older template/renderer version
+    index = tmp_path / "index.html"
+    index.write_text('<meta name="generator" content="apple-events-tracker 000000000000" />')
+    # When checked / Then the mismatch marks it stale
+    assert output_is_stale(index)

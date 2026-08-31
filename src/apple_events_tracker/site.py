@@ -10,7 +10,9 @@ CSS and fonts remain first-party — no trackers, cookies, or web fonts.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import shutil
 from pathlib import Path
 from typing import Any
@@ -61,6 +63,37 @@ _MONTHS = (
 
 
 _KIND_LABELS = {"wwdc": "WWDC", "special-event": "Special Event"}
+
+# Everything besides event data that shapes the published output. Hashed into the
+# renderer fingerprint so a template/renderer fix republishes the site on the next run
+# even when Apple's data is unchanged (the FR-8 gate alone would leave it stale forever).
+_RENDER_SOURCE_NAMES = ("site.py", "og.py", "ics.py", "config.py")
+_FINGERPRINT_RE = re.compile(r'name="generator" content="apple-events-tracker ([0-9a-f]{12})"')
+
+
+def renderer_fingerprint() -> str:
+    """Content hash (12 hex chars) of the templates and render-shaping source files."""
+    digest = hashlib.sha256()
+    sources = sorted(_TEMPLATES_DIR.glob("*.j2")) + [
+        Path(__file__).parent / name for name in _RENDER_SOURCE_NAMES
+    ]
+    for path in sources:
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()[:12]
+
+
+def output_is_stale(index_file: Path) -> bool:
+    """True when ``index_file`` was rendered by a different template/renderer version.
+
+    The fingerprint is stamped into the generator ``<meta>`` tag at render time; a
+    missing file or stamp (pre-fingerprint output) also counts as stale so the first
+    run after this feature ships republishes once and stamps it.
+    """
+    if not index_file.exists():
+        return True
+    match = _FINGERPRINT_RE.search(index_file.read_text(encoding="utf-8"))
+    return match is None or match.group(1) != renderer_fingerprint()
 
 
 def _event_view(event: Event) -> dict[str, Any]:
@@ -214,6 +247,7 @@ def _build_context(
             store, f"{base_url}/", f"{base_url}/assets/og.png?v={cache_key}"
         ),
         "sitemap_lastmod": generated_at,
+        "renderer_fingerprint": renderer_fingerprint(),
     }
 
 

@@ -155,9 +155,12 @@ def run(argv: list[str] | None = None) -> int:
     )
 
     bootstrap = not (events_file.exists() and feed_file.exists() and index_file.exists())
-    if not result.has_changes and not bootstrap:
+    stale = site.output_is_stale(index_file)
+    if not result.has_changes and not bootstrap and not stale:
         log.info("no new or changed events — no write, no commit (FR-8).")
         return 0
+    if stale and not result.has_changes and not bootstrap:
+        log.info("template/renderer changed since last publish — republishing site.")
     if args.dry_run:
         log.info(
             "dry-run: %d changes pending; writing nothing.", len(result.new) + len(result.changed)
@@ -226,9 +229,12 @@ def _refresh_status(
         log.info("CHANGED  %s  %s → %s (seq=%d)", e.key, e.title, e.status, e.sequence)
 
     bootstrap = not (events_file.exists() and feed_file.exists() and index_file.exists())
-    if not result.has_changes and not bootstrap:
+    stale = site.output_is_stale(index_file)
+    if not result.has_changes and not bootstrap and not stale:
         log.info("no status transitions due — no write, no commit (FR-8).")
         return 0
+    if stale and not result.has_changes and not bootstrap:
+        log.info("template/renderer changed since last publish — republishing site.")
     if args.dry_run:
         log.info("dry-run: %d status change(s) pending; writing nothing.", len(result.changed))
         return 0

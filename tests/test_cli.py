@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from apple_events_tracker import cli, config, ics
+from apple_events_tracker import cli, config, ics, site
 from apple_events_tracker.cli import run
 from apple_events_tracker.fetch import FetchResult
 
@@ -125,6 +125,49 @@ def test_304_no_due_transitions_is_noop(tmp_path: Path, monkeypatch: pytest.Monk
     code = run(_online_args(data_dir, docs_dir, "2026-06-08T17:00:00Z"))
     assert code == 0
     assert (data_dir / "events.json").read_bytes() == before
+
+
+def test_template_change_republishes_site_without_data_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A template/renderer fix must reach the published site on the next run (not wait
+    for Apple's data to change), while identical reruns stay no-ops (FR-8)."""
+    # Given a published site whose renderer has since changed (different fingerprint)
+    data_dir, docs_dir = _setup(tmp_path)
+    run(_args(data_dir, docs_dir, "apple-events-with-recent.html"))
+    index_before = (docs_dir / "index.html").read_text()
+    monkeypatch.setattr(site, "renderer_fingerprint", lambda: "feedfacecafe")
+
+    # When the pipeline reruns with unchanged event data
+    code = run(_args(data_dir, docs_dir, "apple-events-with-recent.html"))
+
+    # Then the site is re-rendered and stamped with the current fingerprint
+    assert code == 0
+    index_after = (docs_dir / "index.html").read_text()
+    assert index_after != index_before
+    assert 'content="apple-events-tracker feedfacecafe"' in index_after
+
+
+def test_304_with_stale_output_republishes_site(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Most runs land on the 304 path — a renderer change must republish there too."""
+    # Given a published site, an unchanged Apple page (304), and a renderer change
+    data_dir, docs_dir = _setup(tmp_path)
+    run(_args(data_dir, docs_dir, "apple-events-with-recent.html"))
+    monkeypatch.setattr(
+        cli,
+        "fetch_conditional",
+        lambda *a, **k: FetchResult(url=config.SOURCE_URL, status_code=304, text="", headers={}),
+    )
+    monkeypatch.setattr(site, "renderer_fingerprint", lambda: "feedfacecafe")
+
+    # When the pipeline runs at the same instant (no status transitions due)
+    code = run(_online_args(data_dir, docs_dir, "2026-06-08T17:00:00Z"))
+
+    # Then the site is still re-rendered with the new fingerprint
+    assert code == 0
+    assert 'content="apple-events-tracker feedfacecafe"' in (docs_dir / "index.html").read_text()
 
 
 def test_broken_page_keeps_last_known_good_and_fails(tmp_path: Path) -> None:
