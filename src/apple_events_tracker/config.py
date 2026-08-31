@@ -183,6 +183,18 @@ LONG_DATE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Month + day with no year, e.g. "September 9" (year inferred relative to scrape time).
+# The lookahead keeps it from half-matching a long-form date that carries its year.
+MONTH_DAY_PATTERN = re.compile(
+    r"\b(January|February|March|April|May|June|July|August|September|October|November|December)"
+    r"\s+(\d{1,2})\b(?!\s*,?\s*\d{4})",
+    re.IGNORECASE,
+)
+
+# Numeric month/day like "9/9", optionally "9/9/2026". Apple's 2026-08 hero copy reads
+# "Watch a special Apple Event on 9/9 at 10 a.m. PT." with no long-form date anywhere.
+NUMERIC_DATE_PATTERN = re.compile(r"\b(\d{1,2})/(\d{1,2})(?:/(\d{4}))?\b")
+
 # Time-of-day like "10 a.m. PT" / "10:00 a.m. PDT" (DS-2 TZID is still preferred).
 TIME_PATTERN = re.compile(
     r"\b(\d{1,2})(?::(\d{2}))?\s*(a\.m\.|p\.m\.|am|pm)\b",

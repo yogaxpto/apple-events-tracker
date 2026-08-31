@@ -75,7 +75,12 @@ def _soup(html: str) -> BeautifulSoup:
 
 
 def _text(node: Tag | NavigableString | None) -> str:
-    return node.get_text(" ", strip=True) if node is not None else ""
+    """Node text with all whitespace normalized to single plain spaces. Apple's copy is
+    full of non-breaking spaces ("Apple\\xa0Event"), which would silently defeat every
+    literal-space regex (the 2026-08 hero went undetected exactly this way)."""
+    if node is None:
+        return ""
+    return " ".join(node.get_text(" ", strip=True).split())
 
 
 def _match_title(text: str) -> str | None:
@@ -83,6 +88,16 @@ def _match_title(text: str) -> str | None:
     for pat in cfg.EVENT_NAME_PATTERNS:
         if pat.search(text):
             return text.strip()
+    return None
+
+
+def _extract_title_phrase(text: str) -> str | None:
+    """Return just the matched event-name phrase from free-running text ("Watch a
+    special Apple Event on 9/9…" → "Apple Event") — unlike :func:`_match_title`, which
+    keeps the whole string because a heading *is* the title."""
+    for pat in cfg.EVENT_NAME_PATTERNS:
+        if m := pat.search(text):
+            return m.group(0).strip()
     return None
 
 
@@ -97,6 +112,42 @@ def _find_long_date(text: str) -> date | None:
         return date(year, month, day)
     except ValueError:
         return None
+
+
+def _infer_year(month: int, day: int, now: datetime) -> date | None:
+    """Resolve a year-less month/day to a concrete date near ``now``.
+
+    Hero copy dates an event that is upcoming or just happened, so prefer this year
+    unless that lands more than ~6 months in the past, then roll to next year.
+    """
+    for year in (now.year, now.year + 1):
+        try:
+            candidate = date(year, month, day)
+        except ValueError:
+            continue
+        if (now.date() - candidate).days <= 180:
+            return candidate
+    return None
+
+
+def _find_short_date(text: str, now: datetime) -> date | None:
+    """Fallback date forms with no year: "September 9", then numeric "9/9" (drift
+    2026-08 — the hero says "on 9/9 at 10 a.m. PT" with no long-form date at all)."""
+    for m in cfg.MONTH_DAY_PATTERN.finditer(text):
+        if found := _infer_year(_MONTHS[m.group(1).lower()], int(m.group(2)), now):
+            return found
+    for m in cfg.NUMERIC_DATE_PATTERN.finditer(text):
+        month, day = int(m.group(1)), int(m.group(2))
+        if not (1 <= month <= 12 and 1 <= day <= 31):
+            continue
+        if m.group(3):
+            try:
+                return date(int(m.group(3)), month, day)
+            except ValueError:
+                continue
+        if found := _infer_year(month, day, now):
+            return found
+    return None
 
 
 def _first_selector(soup: BeautifulSoup, selectors: list[str]) -> Tag | None:
@@ -181,8 +232,12 @@ def _find_recent_section(soup: BeautifulSoup) -> Tag | None:
     return None
 
 
-def _parse_hero(soup: BeautifulSoup, base_url: str) -> dict[str, object] | None:
-    """Extract the upcoming/hero event from DS-1: title, date, watch + add-to-cal links."""
+def _parse_hero(soup: BeautifulSoup, base_url: str, now: datetime) -> dict[str, object] | None:
+    """Extract the upcoming/hero event from DS-1: title, date, tagline, watch link.
+
+    Returns ``None`` only when no hero container matches *and* no heading carries a
+    known event name — a matched container with an unrecognized heading still counts
+    as a present hero (its title may be recoverable from body copy or DS-2)."""
     hero = _first_selector(soup, cfg.HERO_SELECTORS)
     scope = hero if hero is not None else soup.find("main") or soup
 
@@ -194,8 +249,27 @@ def _parse_hero(soup: BeautifulSoup, base_url: str) -> dict[str, object] | None:
             title = cand
             title_heading = heading if isinstance(heading, Tag) else None
             break
-    if not title:
+    if not title and hero is not None:
+        # Drift 2026-08: the hero heading is a bare marketing tagline ("Surprise and
+        # shine.") and the event name only appears in body copy ("Watch a special Apple
+        # Event on 9/9…"). Scan the hero's own text — never the whole page — and keep
+        # just the matched phrase.
+        title = _extract_title_phrase(_text(hero))
+    if not title and hero is None:
         return None
+
+    # Tagline: first hero heading that is not itself an event name (nor the page's
+    # generic "Apple Events" h1) — becomes the event description when present.
+    tagline = ""
+    if hero is not None:
+        for heading in hero.find_all(["h1", "h2"]):
+            heading_text = _text(heading)
+            if not heading_text or heading_text.lower() == "apple events":
+                continue
+            if _match_title(heading_text):
+                continue
+            tagline = heading_text
+            break
 
     # Date: read it from a *tight* region so we never borrow an unrelated date from
     # elsewhere on the page (e.g. the recent-events gallery). When a hero container was
@@ -206,8 +280,7 @@ def _parse_hero(soup: BeautifulSoup, base_url: str) -> dict[str, object] | None:
         parent = title_heading.find_parent("section")
         date_scope = parent if isinstance(parent, Tag) else title_heading.parent
     block_text = _text(date_scope) if isinstance(date_scope, Tag) else ""
-    event_date = _find_long_date(block_text)
-    add_to_cal = find_add_to_calendar_url(soup, base_url)
+    event_date = _find_long_date(block_text) or _find_short_date(block_text, now)
 
     watch_url: str | None = None
     if isinstance(scope, Tag):
@@ -225,7 +298,7 @@ def _parse_hero(soup: BeautifulSoup, base_url: str) -> dict[str, object] | None:
     return {
         "title": title,
         "date": event_date,
-        "add_to_calendar": add_to_cal,
+        "tagline": tagline,
         "watch_url": watch_url,
         "present": True,
     }
@@ -301,58 +374,71 @@ def build_events(
     by_key: dict[str, Event] = {}
 
     # --- hero / upcoming ---------------------------------------------------------------
-    hero = _parse_hero(soup, base)
+    # DS-2 discovery is deliberately independent of the hero markup: the "Add to
+    # calendar" event.ics link only exists while an event is scheduled and carries
+    # authoritative UID/SUMMARY/DTSTART — so detection must never hinge on hero
+    # heading heuristics alone (drift 2026-08: the heading was a bare tagline).
+    add_to_cal = find_add_to_calendar_url(soup, base)
+    hero = _parse_hero(soup, base, now)
     if hero:
         result.hero_present = True
-        title = str(hero["title"])
-        kind = cfg.classify_kind(title)
-        add_to_cal = hero.get("add_to_calendar")
-        parsed_ics: ParsedIcs | None = None
-        if add_to_cal and ics_fetcher is not None:
-            try:
-                parsed_ics = parse_event_ics(ics_fetcher(str(add_to_cal)))
-            except Exception:
-                parsed_ics = None  # DS-2 best-effort; HTML date is the fallback
 
-        if parsed_ics and parsed_ics.start is not None:
-            # FR-4: DS-2 is authoritative when present.
-            start_dt = parsed_ics.start
-            end_dt = parsed_ics.end
-            event_date = start_dt.date()
-            status = "upcoming" if start_dt >= now else "past"
-            ev = Event(
-                key=derive_key(kind, event_date),
-                uid=parsed_ics.uid or "",
-                title=title,
-                kind=kind,
-                status=status,
-                start=_iso(start_dt),
-                end=_iso(end_dt) if end_dt else None,
-                tzid=parsed_ics.tzid or cfg.CAL_TIMEZONE,
-                all_day=False,
-                description=_hero_description(hero),
-                source_url=cfg.SOURCE_URL,
-                watch_url=hero.get("watch_url") or None,  # type: ignore[arg-type]
-            )
-            by_key[ev.key] = ev
-        elif hero.get("date") is not None:
-            # No DS-2: keep the upcoming event as a date-only entry until the ics appears.
-            event_date = hero["date"]  # type: ignore[assignment]
-            assert isinstance(event_date, date)
-            status = "upcoming" if event_date >= now.date() else "past"
-            ev = Event(
-                key=derive_key(kind, event_date),
-                uid="",
-                title=title,
-                kind=kind,
-                status=status,
-                start=event_date.isoformat(),
-                all_day=True,
-                description=_hero_description(hero),
-                source_url=cfg.SOURCE_URL,
-                watch_url=hero.get("watch_url") or None,  # type: ignore[arg-type]
-            )
-            by_key[ev.key] = ev
+    parsed_ics: ParsedIcs | None = None
+    if add_to_cal and ics_fetcher is not None:
+        try:
+            parsed_ics = parse_event_ics(ics_fetcher(add_to_cal))
+        except Exception:
+            parsed_ics = None  # DS-2 best-effort; HTML date is the fallback
+
+    hero_title = str(hero["title"]) if hero and hero.get("title") else None
+    ics_title = parsed_ics.summary if parsed_ics else None
+    # An event.ics with a start *is* a scheduled Apple event even if every title
+    # heuristic failed, so fall back to the generic label rather than dropping it.
+    title = hero_title or ics_title
+    if not title and parsed_ics and parsed_ics.start is not None:
+        title = "Apple Event"
+
+    hero_event: Event | None = None
+    if title and parsed_ics and parsed_ics.start is not None:
+        # FR-4: DS-2 is authoritative when present.
+        start_dt = parsed_ics.start
+        end_dt = parsed_ics.end
+        kind = cfg.classify_kind(title)
+        status = "upcoming" if start_dt >= now else "past"
+        hero_event = Event(
+            key=derive_key(kind, start_dt.date()),
+            uid=parsed_ics.uid or "",
+            title=title,
+            kind=kind,
+            status=status,
+            start=_iso(start_dt),
+            end=_iso(end_dt) if end_dt else None,
+            tzid=parsed_ics.tzid or cfg.CAL_TIMEZONE,
+            all_day=False,
+            description=_hero_description(hero),
+            source_url=cfg.SOURCE_URL,
+            watch_url=(hero.get("watch_url") if hero else None) or None,  # type: ignore[arg-type]
+        )
+    elif title and hero and hero.get("date") is not None:
+        # No DS-2: keep the upcoming event as a date-only entry until the ics appears.
+        event_date = hero["date"]
+        assert isinstance(event_date, date)
+        kind = cfg.classify_kind(title)
+        status = "upcoming" if event_date >= now.date() else "past"
+        hero_event = Event(
+            key=derive_key(kind, event_date),
+            uid="",
+            title=title,
+            kind=kind,
+            status=status,
+            start=event_date.isoformat(),
+            all_day=True,
+            description=_hero_description(hero),
+            source_url=cfg.SOURCE_URL,
+            watch_url=hero.get("watch_url") or None,  # type: ignore[arg-type]
+        )
+    if hero_event is not None:
+        by_key[hero_event.key] = hero_event
 
     # --- recent / archive --------------------------------------------------------------
     recent_items, section_present = _parse_recent(soup, base)
@@ -361,7 +447,7 @@ def build_events(
     for item in recent_items:
         title = str(item["title"])
         kind = cfg.classify_kind(title)
-        event_date = item["date"]  # type: ignore[assignment]
+        event_date = item["date"]
         assert isinstance(event_date, date)
         key = derive_key(kind, event_date)
         if key in by_key:  # hero already captured this event with richer data
@@ -386,11 +472,22 @@ def build_events(
             "changed the page markup"
         )
 
+    # RES-1: an "Add to calendar" link proves an event is scheduled — failing to turn it
+    # into an event must fail the run loudly, not report "no changes" (the 2026-08
+    # tagline-hero drift slipped through exactly this way for days).
+    if add_to_cal and hero_event is None:
+        raise StructureError(
+            f"add-to-calendar link present ({add_to_cal}) but no upcoming event could "
+            "be extracted — hero markup or event.ics likely changed"
+        )
+
     result.events = list(by_key.values())
     return result
 
 
-def _hero_description(hero: dict[str, object]) -> str:
-    # The hero block rarely has a dedicated blurb element we can isolate reliably;
-    # keep a short, stable description. Watch link is carried separately.
-    return "Upcoming Apple event."
+def _hero_description(hero: dict[str, object] | None) -> str:
+    # The hero block rarely has a dedicated blurb element we can isolate reliably; use
+    # the marketing tagline when the hero carries one ("Surprise and shine."), else a
+    # short, stable default. Watch link is carried separately.
+    tagline = str(hero.get("tagline") or "") if hero else ""
+    return tagline or "Upcoming Apple event."

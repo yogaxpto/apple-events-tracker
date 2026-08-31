@@ -110,6 +110,72 @@ def test_recent_gallery_fixture_extracts_real_events() -> None:
     assert all(e.watch_url is None for e in result.events)
 
 
+# --- DS-1: tagline hero (real saved page, 2026-08) -------------------------------------
+SEPT_NOW = datetime(2026, 8, 31, 12, 0, tzinfo=UTC)
+
+
+def test_tagline_hero_fixture_detects_event_via_ds2() -> None:
+    """Regression: this page parsed as hero_present=False and no event, so CI reported
+    "no changes" daily while the Sept 2026 event sat on the page."""
+    # Given the real 2026-08 page snapshot — the hero heading is a bare marketing
+    # tagline ("Surprise and shine.") and the event name/date appear only in body copy
+    # ("Watch a special Apple Event on 9/9 at 10 a.m. PT.") — and a fetchable DS-2 ics
+    html = _read("apple-events-hero-tagline.html")
+    ics_text = _read("event-sept-2026.ics")
+
+    # When the page is parsed with the DS-2 fetcher available
+    result = build_events(html, RuntimeConfig(), now=SEPT_NOW, ics_fetcher=lambda _url: ics_text)
+
+    # Then the hero is recognized and one upcoming event is built from DS-2's
+    # authoritative UID/DTSTART/TZID, described by the hero tagline
+    assert result.hero_present
+    upcoming = [e for e in result.events if e.status == "upcoming"]
+    assert len(upcoming) == 1
+    ev = upcoming[0]
+    assert ev.key == "special-event-2026-09-09"
+    assert ev.title == "Apple Event"
+    assert ev.all_day is False
+    assert ev.start_datetime().hour == 10
+    assert ev.tzid == "America/Los_Angeles"
+    assert ev.uid == "7F2C9A14-3B6D-4E58-9C1A-0D9E2F6A8B30"
+    assert ev.description == "Surprise and shine."
+
+
+def test_tagline_hero_fixture_detects_event_without_ds2() -> None:
+    # Given the same tagline-hero snapshot but no DS-2 fetcher (offline / ics failure)
+    html = _read("apple-events-hero-tagline.html")
+
+    # When the page is parsed from HTML alone
+    result = build_events(html, RuntimeConfig(), now=SEPT_NOW)
+
+    # Then the title is recovered from the hero body copy and the date from "9/9" with
+    # the year inferred from ``now`` — a date-only upcoming event until the ics appears
+    upcoming = [e for e in result.events if e.status == "upcoming"]
+    assert len(upcoming) == 1
+    ev = upcoming[0]
+    assert ev.key == "special-event-2026-09-09"
+    assert ev.all_day is True
+    assert ev.start == "2026-09-09"
+
+
+def test_structure_error_when_ics_link_present_but_no_event_extracted() -> None:
+    # Given a page carrying an "Add to calendar" .ics link — proof an event is
+    # scheduled — whose hero yields no recognizable title or date
+    broken = """
+    <html><head><title>Apple Events - Apple</title></head><body><main>
+      <section class="section-hero">
+        <h2>Mystery.</h2>
+        <a href="/v/apple-events/home/xx/built/assets/event/event.ics">Add to calendar</a>
+      </section>
+    </main></body></html>
+    """
+
+    # When the page is parsed without a reachable DS-2, then the run fails loudly
+    # instead of reporting "no changes"
+    with pytest.raises(StructureError):
+        build_events(broken, RuntimeConfig(), now=SEPT_NOW)
+
+
 # --- DS-1: active-window fixture (the real saved page) ---------------------------------
 def test_active_stream_fixture_is_valid_state_not_error() -> None:
     result = build_events(_read("apple-events-active-stream.html"), RuntimeConfig(), now=NOW)
