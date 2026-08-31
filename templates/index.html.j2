@@ -65,7 +65,7 @@
 
         {% if not next_event.all_day %}
           <div class="countdown" v-scope="Countdown('{{ next_event.start }}')" v-cloak
-               :data-live="live ? 'now' : null" @mounted="start()" @unmounted="stop()">
+               :data-live="live ? 'now' : null" @vue:mounted="start()" @vue:unmounted="stop()">
             <div class="countdown__cell"><span class="countdown__num" v-text="days">0</span><span class="countdown__label">days</span></div>
             <div class="countdown__cell"><span class="countdown__num" v-text="hours">00</span><span class="countdown__label">hrs</span></div>
             <div class="countdown__cell"><span class="countdown__num" v-text="minutes">00</span><span class="countdown__label">min</span></div>
