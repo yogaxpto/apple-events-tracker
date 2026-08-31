@@ -53,7 +53,7 @@ cron / manual ─▶ GitHub Actions
 | Change detection / classification (new / changed / unchanged) | [`src/apple_events_tracker/diff.py`](src/apple_events_tracker/diff.py) |
 | iCalendar feed generation + validation | [`src/apple_events_tracker/ics.py`](src/apple_events_tracker/ics.py) |
 | Static site rendering (Jinja2) | [`src/apple_events_tracker/site.py`](src/apple_events_tracker/site.py) |
-| GitHub-issue notifications | [`src/apple_events_tracker/notify.py`](src/apple_events_tracker/notify.py) |
+| Run notifications (CI notes + failure issues) | [`src/apple_events_tracker/notify.py`](src/apple_events_tracker/notify.py) |
 | Pipeline orchestrator (CLI) | [`src/apple_events_tracker/cli.py`](src/apple_events_tracker/cli.py) |
 | Centralized config (selectors, event-name patterns, repo identity) | [`src/apple_events_tracker/config.py`](src/apple_events_tracker/config.py) |
 
@@ -75,7 +75,9 @@ Published artifacts (committed to git, served by Pages):
   and a descriptive `User-Agent`. The daily run is conditional, so unchanged days return
   `304` and only refresh time-based status — Apple's HTML is fetched in full only when it
   actually changes.
-- **Alerting** — a failing run opens/updates a single tracking GitHub issue.
+- **Alerting** — a failing run opens/updates a single tracking GitHub issue; a newly
+  detected event is announced as a note on the CI run (job summary + annotation) —
+  subscribers get the event itself through the calendar feed.
 
 ## Configure
 

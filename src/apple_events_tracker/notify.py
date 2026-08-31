@@ -1,13 +1,15 @@
-"""Notifications via GitHub issues (FR-18, NOTE-1, RES-5).
+"""Run notifications (FR-18, NOTE-1, RES-5).
 
 Two channels, both dependency-free and best-effort:
 
-* :func:`notify_new_events` opens an issue when a genuinely new event is detected.
+* :func:`notify_new_events` announces newly-detected events as a note on the CI run
+  (job summary + annotation). New events need no human action — subscribers get them
+  through the calendar feed — so they don't warrant an issue.
 * :func:`report_failure` opens **or updates a single** tracking issue when a run fails
-  (RES-5) so the maintainer is alerted without inbox spam.
+  (RES-5): failures do need a human, and the single issue alerts without inbox spam.
 
-Both no-op (with a log line) when ``GITHUB_TOKEN`` is absent — e.g. local runs. Secrets
-are never logged or written to committed files (NOTE-3).
+:func:`report_failure` no-ops (with a log line) when ``GITHUB_TOKEN`` is absent — e.g.
+local runs. Secrets are never logged or written to committed files (NOTE-3).
 """
 
 from __future__ import annotations
@@ -24,7 +26,6 @@ log = logging.getLogger(__name__)
 
 FAILURE_LABEL = "scrape-failing"
 FAILURE_TITLE = "Scrape/parse failing — Apple may have changed the page"
-NEW_EVENT_LABEL = "new-event"
 
 
 def _api_base() -> str:
@@ -52,35 +53,35 @@ def _client(token: str) -> httpx.Client:
 
 
 def notify_new_events(new_events: list[Event], config: RuntimeConfig) -> None:
-    """Open an issue announcing newly-detected events (FR-18). No-op if none/no token."""
+    """Announce newly-detected events as a note on the CI run (FR-18).
+
+    Appends a Markdown section to the Actions job summary and emits a ``::notice``
+    annotation so the announcement shows on the run's front page. Outside Actions
+    (no ``GITHUB_STEP_SUMMARY``) the log line is the whole announcement.
+    """
     if not new_events:
         return
-    token = _token()
-    if not token:
-        log.info("no GITHUB_TOKEN; skipping new-event issue for %d event(s)", len(new_events))
-        return
-    slug = _repo_slug(config)
-    lines = [f"- **{e.title}** — {e.start} ({e.kind})" for e in new_events]
-    title = (
+    headline = (
         f"New Apple event detected: {new_events[0].title}"
         if len(new_events) == 1
         else f"{len(new_events)} new Apple events detected"
     )
-    body = (
-        "The tracker detected the following new event(s) on "
-        f"{config.site.repo_url}:\n\n" + "\n".join(lines) + "\n\n"
+    for e in new_events:
+        log.info("new event: %s — %s (%s)", e.title, e.start, e.kind)
+
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not summary_path:
+        return
+    lines = [f"- **{e.title}** — {e.start} ({e.kind})" for e in new_events]
+    summary = (
+        f"### {headline}\n\n" + "\n".join(lines) + "\n\n"
         f"Feed: {config.site.feed_url}\nSite: {config.site.pages_base_url}/\n"
     )
-    try:
-        with _client(token) as client:
-            resp = client.post(
-                f"/repos/{slug}/issues",
-                json={"title": title, "body": body, "labels": [NEW_EVENT_LABEL]},
-            )
-            resp.raise_for_status()
-            log.info("opened new-event issue #%s", resp.json().get("number"))
-    except httpx.HTTPError as exc:
-        log.warning("failed to open new-event issue: %s", exc)
+    with open(summary_path, "a", encoding="utf-8") as fh:
+        fh.write(summary)
+    # Workflow commands are parsed from stdout, not the logging stream (stderr).
+    details = "; ".join(f"{e.title} on {e.start}" for e in new_events)
+    print(f"::notice title={headline}::{details}")
 
 
 def report_failure(message: str, config: RuntimeConfig) -> None:

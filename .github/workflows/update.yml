@@ -20,7 +20,7 @@ permissions:
   contents: write # commit last-known-good + artifacts
   pages: write # Pages deploy
   id-token: write # Pages deploy (OIDC)
-  issues: write # new-event / failure notifications
+  issues: write # failure notifications
 
 jobs:
   update:
