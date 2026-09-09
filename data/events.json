@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-31T10:43:56Z",
+  "generated_at": "2026-09-09T19:34:53Z",
   "events": [
     {
       "key": "special-event-2026-09-09",
       "uid": "7F2C9A14-3B6D-4E58-9C1A-0D9E2F6A8B30",
       "title": "Apple Event",
       "kind": "special-event",
-      "status": "upcoming",
+      "status": "past",
       "start": "2026-09-09T10:00:00-07:00",
       "end": "2026-09-09T12:00:00-07:00",
       "tzid": "America/Los_Angeles",
@@ -15,9 +15,9 @@
       "description": "Surprise and shine.",
       "source_url": "https://www.apple.com/apple-events/",
       "watch_url": null,
-      "sequence": 0,
+      "sequence": 1,
       "first_seen": "2026-08-31T10:14:00Z",
-      "last_changed": "2026-08-31T10:14:00Z"
+      "last_changed": "2026-09-09T19:34:53Z"
     },
     {
       "key": "wwdc-2026-06-08",
